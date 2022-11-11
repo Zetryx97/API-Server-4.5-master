@@ -136,16 +136,14 @@
 
             function toggleUserConnectionIcon(){
                 if(!isSignedIn){
-                    $("#ConnectionIcons").append(
-                        $(
+                    $("#ConnectionIcons").append($(
                             `<span class="cmd fa fa-arrow-right-to-bracket" id="signInCmd" title="Sign in" 
                             data-toggle="tooltip"></span>`
                         )
                     )
                 }
                 else{
-                    $("#ConnectionIcons").append(
-                        $(
+                    $("#ConnectionIcons").append( $(
                             `<span class="cmd fa fa-arrow-right-from-bracket" id="signInCmd" title="Sign in" 
                             data-toggle="tooltip"></span>`
                         )

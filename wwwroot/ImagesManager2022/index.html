@@ -138,13 +138,15 @@
                 if(!isSignedIn){
                     $("#ConnectionIcons").append($(
                             `<span class="cmd fa fa-arrow-right-to-bracket" id="signInCmd" title="Sign in" 
+                            data-toggle="tooltip"></span>
+                            <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account" 
                             data-toggle="tooltip"></span>`
                         )
                     )
                 }
                 else{
                     $("#ConnectionIcons").append( $(
-                            `<span class="cmd fa fa-arrow-right-from-bracket" id="signInCmd" title="Sign in" 
+                            `<span class="cmd fa fa-arrow-right-from-bracket" id="signInCmd" title="Sign out" 
                             data-toggle="tooltip"></span>`
                         )
                     )

@@ -25,8 +25,21 @@
         </div>
 
         <form id="creation-account-form">
-            
+                <label for="username_input">Nom d'usager</label> <input type="text" id="username_input" class="form-control" required>
+
+                <label for="email_input">Courriel</label> <input type="email" id="email_input" class="form-control" required>
+
+                <label for="pwd-user">Mot de passe</label> <input type="password" class="MatchedPassword form-control" id="pwd-user" required>
+
+                <label for="pwd-user-confirm">Confirmation</label> <input type="password" id="pwd-user-confirm" class="MatchedPassword form-control" matchedPasswordId="pwd-user">
+
+                <label for="avatar">Avatar</label>
+                        <div id='avatar' class='ImageUploader' defaultImage='images/No_Avatar.png'
+                            waitingImage='images/writing.gif'>
+                        </div>
+                        <div class="note">Cliquez-Déposez votre avatar</div>
         </form>
+
         <div class="mainContainer">
             <div class="headerPanel">
                 <div class="headerLayout">
@@ -453,6 +466,38 @@
             }
 
             $("#icon-site").click(ShowDialogAbout);
+
+            $("#creation-account-form").dialog({
+                title: "Création de compte",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                    hide: { effect: 'fade', speed: 400 },
+                    width: 500, minWidth: 500, maxWidth: 500,
+                    height: 500, minHeight: 230, maxHeight: 700,
+                    position: { my: "top", at: "top", of: window },
+                buttons:[{
+                    text: "Confirmer",
+                    click: function (){
+                        //Do something
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+            });
+
+            function ShowCreationUserForm()
+            {
+                $("#creation-account-form").dialog("open");
+            }
+
+            $("#createAccountCmd").click(ShowCreationUserForm);
 
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -56,9 +56,14 @@
                         <span class="header outLinedText tbg-yellow">
                             D
                         </span>
+                        
                     </div>
+
                     <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image"
-                        data-toggle="tooltip"></span>
+                    data-toggle="tooltip">                   
+                    </span>
+                    
+                    <span id="ConnectionIcons"></span>
                 </div>
             </div>
 
@@ -116,6 +121,7 @@
             let appendCount = 3;
             let previousScrollPosition = 0;
             let appendMode = false;
+            let isSignedIn = false;
 
             init_UI();
             HEAD(checkETag, error);
@@ -123,7 +129,26 @@
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //---NAT---//
+            toggleUserConnectionIcon();
 
+            function toggleUserConnectionIcon(){
+                if(!isSignedIn){
+                    $("#ConnectionIcons").append(
+                        $(
+                            `<span class="cmd fa fa-arrow-right-to-bracket" id="signInCmd" title="Sign in" 
+                            data-toggle="tooltip"></span>`
+                        )
+                    )
+                }
+                else{
+                    $("#ConnectionIcons").append(
+                        $(
+                            `<span class="cmd fa fa-arrow-right-from-bracket" id="signInCmd" title="Sign in" 
+                            data-toggle="tooltip"></span>`
+                        )
+                    )
+                }
+            }
 
 
 

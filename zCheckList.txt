@@ -1,0 +1,51 @@
+- Ajouter les icônes commande : connexion/déconnexion, modification de profil------------------------------------------------------------------------------------
+
+- Dialogue de création de compte : (voir exemples plus loin)
+    o Nom d’usager
+    o Courriel
+    o Mot de passe / confirmation
+    o Contrôle de saisie de l’avatar
+    o Bouton Enregistrer
+    o Bouton Annuler
+
+- Dialogue de saisie du code de vérification de courriel à la suite d’enregistrement du compte.
+
+- Dialogue de modification de profil : idem au dialogue de création de compte avec en plus un
+bouton de retrait du compte suivi d’un dialogue confirmation lorsque cliqué.
+
+- Indiquer dans l’interface l’avatar de l’usager connecté ainsi que son nom d’usager.
+
+- Pour chaque image, afficher l’avatar de l’usager créateur. Son survol dévoilera son nom.
+
+- Lors de la création/modification d’image permettre le partage.
+
+- Indiquer pour chaque image partagée un indicateur (voir exemple)
+
+- Les usagers pourront voir leurs images ainsi que celles des autres qui auront été partagées.
+
+- Ajouter une icône qui commandera le tri ascendant/descendant de date des images
+
+- Ajouter un filtre d’images par usager via un liste déroulante énumérant tous les usagers qui
+ont créé au moins une image. Elle devra être de la forme suivante : Toutes les images, Mes
+images, usager X, usager Y, usager Z, etc.
+
+- Ajouter un champ de recherche par mots-clés insensibles à la casse (recherche dans titre et
+description) pour filtrer les images. Ce champ devra se comporter comme un contrôle html
+datalist peuplée par les mots-clés déjà utilisés. Utilisez localstorage du fureteur pour les
+stocker.
+
+- Seules les images créées par l’usager connecté sont accessibles en écriture.
+
+- Les images en lecture seule ne devront pas être accompagnées des icones de commande
+modifier et effacer.
+
+- Un clic sur l’image devra faire apparaître dialogue montrant les informations suivantes (dans
+l’ordre de votre choix):
+    o Titre
+    o Description
+    o L’image (un clic ouvrira un nouvel onglet qui présente l’image en taille originale)
+    o Date de création
+    o L’avatar et nom du créateur
+    o Bouton fermer
+
+- Un clic sur l’icône de l’application fera apparaître un dialogue « à propos » exposant les noms des équipiers------------------------------------------------------------------------------------------------

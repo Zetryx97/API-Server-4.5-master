@@ -3,16 +3,25 @@
 /*///////////////////////////////////////////////////////////////////////////////// */
 /*---Nath---*/
 
+.searchBar{
+    background-color: gray;
+    height: 3rem;
+    padding-top: 0.5rem;
+    padding-left: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
 
+.searchParameters{
+    border-radius: 0.4rem;
+    border: 2px solid;
+    width: 15rem;
+    height: 2rem;   
+}
 
 
 /*///////////////////////////////////////////////////////////////////////////////// */
-
-
-
-
-
-
 
 
 body {

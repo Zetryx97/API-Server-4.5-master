@@ -20,10 +20,13 @@
 
     <body>
 
+        <div id="message-about">Une création de Gabriel Lessard et Nathanael Kolodenchuk.
+            Session Automne 2022 - Collège Lionel-Groulx
+        </div>
         <div class="mainContainer">
             <div class="headerPanel">
                 <div class="headerLayout">
-                    <img src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
+                    <img id="icon-site" src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
                         title="Gestionnaire d'images">
                    <div style="display:flex">
                         <span class="header outLinedText tbg-yellow">
@@ -424,7 +427,28 @@
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //---GAB---//
+            $("#message-about").dialog({
+                title: "À propos",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                    hide: { effect: 'fade', speed: 400 },
+                    width: 500, minWidth: 500, maxWidth: 500,
+                    height: 230, minHeight: 230, maxHeight: 230,
+                    position: { my: "top", at: "top", of: window },
+                buttons: [{
+                    text: "Ok",
+                    click: function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
 
+            function ShowDialogAbout(){
+                $("#message-about").dialog("open");
+            }
+
+            $("#icon-site").click(ShowDialogAbout);
 
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

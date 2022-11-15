@@ -40,6 +40,14 @@
                         <div class="note">Cliquez-Déposez votre avatar</div>
         </form>
 
+        <div id="loginDialog">
+            <form id="loginForm">
+                <label for="email-login">Courriel</label><input type="email" id="email-login" required class="form-control">
+                <label for="pwd-login">Mot de passe</label> <input type="password" class="form-control" id="pwd-login" required>
+                <input type="checkbox" id="remember-user"> <label for="remember-user">Se souvenir de moi</label>
+            </form>
+        </div>
+
         <div class="mainContainer">
             <div class="headerPanel">
                 <div class="headerLayout">
@@ -172,7 +180,7 @@
             function toggleUserConnectionIcon(){
                 if(!isSignedIn){
                     $("#ConnectionIcons").append($(
-                            `<span class="cmd fa fa-arrow-right-to-bracket" id="signInCmd" title="Sign in" 
+                            `<span class="cmd fa fa-arrow-right-to-bracket" id="logInCmd" title="Login" 
                             data-toggle="tooltip"></span>
                             <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account" 
                             data-toggle="tooltip"></span>`
@@ -526,6 +534,36 @@
 
             $("#createAccountCmd").click(ShowCreationUserForm);
 
+            $("#loginDialog").dialog({
+                title: "Connexion",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                    hide: { effect: 'fade', speed: 400 },
+                    width: 500, minWidth: 500, maxWidth: 500,
+                    height: 400, minHeight: 230, maxHeight: 500,
+                    position: { my: "top", at: "top", of: window },
+                buttons:[{
+                    text: "Confirmer",
+                    click: function (){
+                        //Do something
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+            });
+
+            function ShowLoginForm()
+            {
+               $("#loginDialog").dialog("open");
+            }
+            $("#logInCmd").click(ShowLoginForm);
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         </script>

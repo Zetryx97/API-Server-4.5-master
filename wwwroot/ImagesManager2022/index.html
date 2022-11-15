@@ -25,6 +25,9 @@
         </div>
 
         <form id="creation-account-form">
+            <input type="hidden" id="Id_User" value="0">
+            <input type="hidden" id="create_input" value="0">
+            <input type="hidden" id="AvatarGUID_input" value="">
                 <label for="username_input">Nom d'usager</label> <input type="text" id="username_input" class="form-control" required>
 
                 <label for="email_input">Courriel</label> <input type="email" id="email_input" class="form-control" required>
@@ -45,6 +48,14 @@
                 <label for="email-login">Courriel</label><input type="email" id="email-login" required class="form-control">
                 <label for="pwd-login">Mot de passe</label> <input type="password" class="form-control" id="pwd-login" required>
                 <input type="checkbox" id="remember-user"> <label for="remember-user">Se souvenir de moi</label>
+            </form>
+        </div>
+
+        <div id="verifiedEmailDialog">
+            Consulter votre boîte de courriel pour connaître votre code
+            de vérification et inscrivez-le ci-dessous
+            <form>
+                <label for="verify-code-input">Code de vérification</label><input type="text" id="verify-code-input" class="form-control">
             </form>
         </div>
 
@@ -502,6 +513,7 @@
 
             $("#icon-site").click(ShowDialogAbout);
 
+            //Create account utilities
             $("#creation-account-form").dialog({
                 title: "Création de compte",
                 autoOpen: false,
@@ -534,6 +546,61 @@
 
             $("#createAccountCmd").click(ShowCreationUserForm);
 
+            function registerUserFromForm()
+            {
+                if($("#creation-account-form")[0].checkValidity())
+                {
+                    let register = {
+                        Id: $("#Id_User").val(),
+                        Name: $("#username_input").val(),
+                        Email: $("#email_input").val(),
+                        Password: $("pwd-user").val(),
+                        VerifyCode: "",
+                        AvatarGUID: $("#AvatarGUID_input").val()
+                    };
+                }
+                else{
+                    $("#creation-account-form")[0].reportValidity();
+                }
+                return false;
+            }
+            $("#verifiedEmailDialog").dialog({
+                title: "Vérification de courriel",
+                autoOpen: false,
+                modal: true,
+                show: { effect: 'fade', speed: 400 },
+                    hide: { effect: 'fade', speed: 400 },
+                    width: 500, minWidth: 500, maxWidth: 500,
+                    height: 400, minHeight: 230, maxHeight: 500,
+                    position: { my: "top", at: "top", of: window },
+                buttons:[{
+                    text: "Créer",
+                    click: function (){
+                        //do something
+                        $(this).dialog("close");
+                        ShowVerfiedCodeDialog();
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+            });
+
+            function ShowVerfiedCodeDialog()
+            {
+                $("#verifiedEmailDialog").dialog("open");
+            }
+            
+            function userInfoToForm(){
+                //do code
+            }
+
+            //Login user utilities
             $("#loginDialog").dialog({
                 title: "Connexion",
                 autoOpen: false,
@@ -546,7 +613,14 @@
                 buttons:[{
                     text: "Confirmer",
                     click: function (){
-                        //Do something
+                        let user_info = connexionFromForm();
+
+                        if(user_info)
+                        {
+                            LOGIN_USER(user_info, getImagesList,error);
+                            $(this).dialog("close");
+                        
+                        }
                     }
                 },
                 {
@@ -564,6 +638,22 @@
                $("#loginDialog").dialog("open");
             }
             $("#logInCmd").click(ShowLoginForm);
+
+            function connexionFromForm()
+            {
+                if($("#loginForm")[0].checkValidity())
+                {
+                    let login = {
+                        Email: $("#email-login").val(),
+                        Password: $("#pwd-login").val()
+                    };
+                    return login;
+                }
+                else{
+                    $("#loginForm")[0].reportValidity();
+                }
+                return false;
+            }
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         </script>

@@ -578,7 +578,7 @@
                     click: function (){
                         //do something
                         $(this).dialog("close");
-                        ShowVerfiedCodeDialog();
+                        $(".scrollContainer").scrollTop(0);
                     }
                 },
                 {
@@ -617,8 +617,15 @@
 
                         if(user_info)
                         {
-                            LOGIN_USER(user_info, getImagesList,error);
-                            $(this).dialog("close");
+                            if(createMode)
+                            {
+                                LOGIN_USER(user_info, getImagesList,error);
+                                $(".scrollContainer").scrollTop(0);
+                            }
+                            else{
+                                PUT();
+                                //EDIT mode
+                            }
                         
                         }
                     }

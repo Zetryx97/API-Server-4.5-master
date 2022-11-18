@@ -34,7 +34,7 @@
 
                 <label for="pwd-user">Mot de passe</label> <input type="password" class="MatchedPassword form-control" id="pwd-user" required>
 
-                <label for="pwd-user-confirm">Confirmation</label> <input type="password" id="pwd-user-confirm" class="MatchedPassword form-control" matchedPasswordId="pwd-user">
+                <label for="pwd-user-confirm">Confirmation</label> <input type="password" id="pwd-user-confirm" class="MatchedPassword form-control" matchedPassword="pwd-user">
 
                 <label for="avatar">Avatar</label>
                         <div id='avatar' class='ImageUploader' defaultImage='images/No_Avatar.png'
@@ -526,7 +526,13 @@
                 buttons:[{
                     text: "Confirmer",
                     click: function (){
-                        //Do something
+                        let newUser = registerUserFromForm();
+                        if(newUser)
+                        {
+                            CREATE_USER(newUser, getImagesList, error);
+                            $(this).dialog("close");
+                            ShowVerfiedCodeDialog();
+                        }
                     }
                 },
                 {
@@ -574,7 +580,7 @@
                     height: 400, minHeight: 230, maxHeight: 500,
                     position: { my: "top", at: "top", of: window },
                 buttons:[{
-                    text: "Créer",
+                    text: "Valider",
                     click: function (){
                         //do something
                         $(this).dialog("close");

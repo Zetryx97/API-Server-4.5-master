@@ -17,8 +17,8 @@ module.exports =
                 host: GmailHost,
                 port: GmailPort,
                 auth: {
-                    user: GmailAccountEmail,
-                    pass: GmailAccountPassword
+                    user: "gablessard17@gmail.com",
+                    pass: "Gabriel11$"
                 }
             })
         }

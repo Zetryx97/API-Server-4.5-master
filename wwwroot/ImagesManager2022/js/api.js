@@ -94,3 +94,14 @@ function VERIFY_USER(code, successCallBack, errorCallBack)
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
+
+function GET_USER()
+{
+    $.ajax({
+        url: baseUrl + "/accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: (data, status, xhr) => { return data;  },
+    });
+}

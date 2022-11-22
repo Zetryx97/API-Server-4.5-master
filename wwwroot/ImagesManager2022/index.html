@@ -178,6 +178,7 @@
         let previousScrollPosition = 0;
         let appendMode = false;
         let isSignedIn = false;
+        let username;
 
         init_UI();
         HEAD(checkETag, error);
@@ -546,6 +547,8 @@
         }
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //---GAB---//
+
+
         $("#message-about").dialog({
             title: "À propos",
             autoOpen: false,
@@ -747,8 +750,10 @@
                         let user_info = connexionFromForm();
                         if (user_info) {
                             if (createMode) {
+                                $(this).dialog("close");
                                 LOGIN_USER(user_info, getImagesList, error);
                                 $(".scrollContainer").scrollTop(0);
+                                username = localStorage.setItem("email",user_info.Email);
                                 isSignedIn = true;
                             } else {
                                 PUT();

@@ -148,16 +148,7 @@
                     <div class="note">Cliquez-Déposez une image</div>
                 </form>
             </div>
-            <div class="searchBar">
-                <select name="filters" id="filterList" class="searchParameters">
-                    <option value="All images">Tous les usagers</option>
-                  </select>
-
-                <input type="text" placeholder="Recherche par mots-clés" class="searchParameters"></input>
-
-                <span class="cmd fa fa-magnifying-glass" id="searchImageCmd" title="Rechercher un image"
-                    data-toggle="tooltip">                   
-                    </span>
+        
             <div id="confirmDeleteDlg">
                 <span id="confirmationMessage"></span>
             </div>
@@ -198,12 +189,7 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //---NAT---//
-        let users;
-
-        function getUsersList() {
-            GET_ALL(refreshimagesList, error, prepareQueryString());
-        }
-
+        
         toggleUserConnectionIcon();
 
         function toggleUserConnectionIcon() {
@@ -221,15 +207,7 @@
                 ));
             }
         }
-
-        function createUserFiltersDropDownList(users) {
-            array.forEach(users => {
-                $("#filterList").append($(
-                    `<option value="` + users.name + `">` + users.name + `</option>`
-                ));
-            });
-        }
-
+        let imageUsersList = [];
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,17 +234,7 @@
                 return queryString;
             }
             GET_ALL(refreshimagesList, error, prepareQueryString());
-        }
-
-            function createUserFiltersDropDownList(users)
-            {
-                $("#filterList").append($(`<option value="Connected user Images">Mes images</option>`));
-                array.forEach(users => {
-                    $("#filterList").append($(
-                        `<option value="`+users.name+`">`+users.name+`</option>`
-                    ));
-                });
-            }
+        }       
         function refreshimagesList(images, ETag) {
             function insertIntoImageList(image) {
 
@@ -295,6 +263,15 @@
                                 </div>
                         `)
                 );
+                if(image.User != null){
+                    if(!imageUsersList.includes(image.User))
+                {
+                    $("#filterList").append($(
+                    `<option value="` + image.User + `">` + image.User + `</option>`
+                ));
+                imageUsersList.push(image.User);
+                } 
+                }                            
             }
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();

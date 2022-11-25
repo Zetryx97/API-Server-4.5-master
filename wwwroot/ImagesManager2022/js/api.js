@@ -105,3 +105,14 @@ function GET_USER()
         success: (data, status, xhr) => { return data;  },
     });
 }
+
+function GET_USERS()
+{
+    $.ajax({
+        url: baseUrl + "/accounts/index",
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: (data, status, xhr) => { return data;  },
+    });
+}

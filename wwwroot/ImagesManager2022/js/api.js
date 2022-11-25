@@ -1,6 +1,7 @@
 const apiBaseURL = "http://localhost:5000/api/images";
-const host = "http://localhost:5000/";
+const baseUrl = "http://localhost:5000";
 
+let userId = 0;
 function HEAD(successCallBack, errorCallBack) {
     $.ajax({
         url: apiBaseURL,
@@ -53,5 +54,54 @@ function DELETE(id, successCallBack, errorCallBack) {
         type: 'DELETE',
         success: () => { successCallBack() },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });
+}
+
+function CREATE_USER(data, successCallBack, errorCallBack)
+{
+    $.ajax({
+        url: baseUrl + "/accounts/register",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: (data, status, xhr) => {
+            userId = data.Id;  
+            successCallBack(data, xhr.getResponseHeader("ETag")) 
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}
+function LOGIN_USER(data, successCallBack, errorCallBack)
+{
+    $.ajax({
+        url: baseUrl + "/token",
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: (data, status, xhr) => {  successCallBack(data, xhr.getResponseHeader("ETag")) },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}
+
+function VERIFY_USER(code, successCallBack, errorCallBack)
+{
+    $.ajax({
+        url: baseUrl + "/accounts/verify?id=" + userId +"&code=" + code,
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify(code),
+        success: (data, status, xhr) => {  successCallBack(data, xhr.getResponseHeader("ETag")) },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}
+
+function GET_USER()
+{
+    $.ajax({
+        url: baseUrl + "/accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: (data, status, xhr) => { return data;  },
     });
 }

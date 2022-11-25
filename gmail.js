@@ -17,14 +17,14 @@ module.exports =
                 host: GmailHost,
                 port: GmailPort,
                 auth: {
-                    user: GmailAccountEmail,
-                    pass: GmailAccountPassword
+                    user: "gablessard17@gmail.com",
+                    pass: "snyfcqrxfwymsqvf"
                 }
             })
         }
 
         async send(to, subject, html) {
-            let from = GmailAccountEmail;
+            let from = "gablessard17@gmail.com";
             await this.transporter.sendMail({ from, to, subject, html }, function (error, info) {
                 if (error) {
                     console.log(error);

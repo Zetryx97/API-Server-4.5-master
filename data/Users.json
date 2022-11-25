@@ -19,13 +19,21 @@
     "AvatarURL": ""
   },
   {
-    "Id": 3,
-    "Name": "Gabriel Lessard",
+    "Id": 4,
+    "Name": "Gab CLG",
+    "Email": "lessardgabriel35@gmail.com",
+    "Password": "Gabriel11",
+    "AvatarGUID": "",
+    "Created": 1669138313,
+    "VerifyCode": 458458
+  },
+  {
+    "Id": 5,
+    "Name": "Gab CLG",
     "Email": "gablessard17@gmail.com",
     "Password": "Mnhjkl63",
-    "Created": 1668534721,
-    "VerifyCode": "verified",
     "AvatarGUID": "",
-    "AvatarURL": ""
+    "Created": 1669144225,
+    "VerifyCode": "verified"
   }
 ]

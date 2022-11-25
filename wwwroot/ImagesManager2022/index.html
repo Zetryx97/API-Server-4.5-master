@@ -97,7 +97,7 @@
             </div>
             <div class="searchBar">
                 <select name="filters" id="filterList" class="searchParameters">
-                    <option value="all">Tous les usagers</option>
+                    <option value="All images">Tous les usagers</option>
                   </select>
 
                 <input type="text" placeholder="Recherche par mots-clés" class="searchParameters"></input>
@@ -170,9 +170,11 @@
             //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             //---NAT---//
             let users;
+            
+            getUsersList();
 
             function getUsersList(){
-                GET_ALL(refreshimagesList, error, prepareQueryString());
+                GET_ALL("/Users", error);
             }
 
             toggleUserConnectionIcon();
@@ -198,6 +200,7 @@
 
             function createUserFiltersDropDownList(users)
             {
+                $("#filterList").append($(`<option value="Connected user Images">Mes images</option>`));
                 array.forEach(users => {
                     $("#filterList").append($(
                         `<option value="`+users.name+`">`+users.name+`</option>`

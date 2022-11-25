@@ -154,16 +154,7 @@
                     <div class="note">Cliquez-Déposez une image</div>
                 </form>
             </div>
-            <div class="searchBar">
-                <select name="filters" id="filterList" class="searchParameters">
-                    <option value="All images">Tous les usagers</option>
-                  </select>
-
-                <input type="text" placeholder="Recherche par mots-clés" class="searchParameters"></input>
-
-                <span class="cmd fa fa-magnifying-glass" id="searchImageCmd" title="Rechercher un image"
-                    data-toggle="tooltip">                   
-                    </span>
+        
             <div id="confirmDeleteDlg">
                 <span id="confirmationMessage"></span>
             </div>
@@ -194,6 +185,8 @@
         let previousScrollPosition = 0;
         let appendMode = false;
         let isSignedIn = false;
+        let imgUserId = "";
+        let imgMotsCles = "le"
 
         $("#logOutCmd").hide();
         init_UI();
@@ -204,13 +197,8 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //---NAT---//
-        let users;
-
-        function getUsersList() {
-            GET_ALL(refreshimagesList, error, prepareQueryString());
-        }
-
-        /*toggleUserConnectionIcon();
+        
+        toggleUserConnectionIcon();
 
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
@@ -226,16 +214,8 @@
                             data-toggle="tooltip"></span>`
                 ));
             }
-        }*/
-
-        function createUserFiltersDropDownList(users) {
-            array.forEach(users => {
-                $("#filterList").append($(
-                    `<option value="` + users.name + `">` + users.name + `</option>`
-                ));
-            });
         }
-
+        let imageUsersList = [];
 
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,25 +234,15 @@
                 let queryString = "";
                 if (appendMode) {
                     queryString =
-                    `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}`;
+                    `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}`;
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
                 }
                 return queryString;
             }
             GET_ALL(refreshimagesList, error, prepareQueryString());
-        }
-
-            function createUserFiltersDropDownList(users)
-            {
-                $("#filterList").append($(`<option value="Connected user Images">Mes images</option>`));
-                array.forEach(users => {
-                    $("#filterList").append($(
-                        `<option value="`+users.name+`">`+users.name+`</option>`
-                    ));
-                });
-            }
+        }       
         function refreshimagesList(images, ETag) {
             function insertIntoImageList(image) {
 
@@ -301,6 +271,15 @@
                                 </div>
                         `)
                 );
+                if(image.UserId != null){
+                    if(!imageUsersList.includes(image.UserId))
+                {
+                    $("#filterList").append($(
+                    `<option value="` + image.UserId + `">` + image.UserId + `</option>`
+                ));
+                imageUsersList.push(image.UserId);
+                } 
+                }                            
             }
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();

@@ -179,7 +179,6 @@
         let previousScrollPosition = 0;
         let appendMode = false;
         let isSignedIn = false;
-        let username;
 
         init_UI();
         HEAD(checkETag, error);
@@ -744,13 +743,13 @@
                     text: "Confirmer",
                     click: function () {
                         let user_info = connexionFromForm();
+                        let user = sessionStorage.getItem("access_token");
                         if (user_info) {
                             if (createMode) {
                                 $(this).dialog("close");
                                 LOGIN_USER(user_info, getImagesList, error);
                                 $(".scrollContainer").scrollTop(0);
-                                username = localStorage.setItem("email",user_info.Email);
-                                isSignedIn = true;
+                                console.log(JSON.parse(user));
                             } else {
                                 PUT();
                                 //EDIT mode
@@ -767,6 +766,11 @@
                 }
             ]
         });
+
+        function checkUserConnected()
+        {
+
+        }
 
         function ShowLoginForm() {
             $("#loginDialog").dialog("open");

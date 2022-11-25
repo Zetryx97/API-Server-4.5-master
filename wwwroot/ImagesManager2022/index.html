@@ -106,8 +106,14 @@
 
                 <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip">
                 </span>
+                <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out" 
+                            data-toggle="tooltip"></span>
+                <span class="cmd fa fa-arrow-right-to-bracket" id="logInCmd" title="Login" 
+                     data-toggle="tooltip"></span>
+                <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account" 
+                    data-toggle="tooltip"></span>
 
-                <span id="ConnectionIcons"></span>
+                <span id="showUserInfo"></span>
             </div>
 
         </div>
@@ -189,6 +195,7 @@
         let appendMode = false;
         let isSignedIn = false;
 
+        $("#logOutCmd").hide();
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -203,7 +210,7 @@
             GET_ALL(refreshimagesList, error, prepareQueryString());
         }
 
-        toggleUserConnectionIcon();
+        /*toggleUserConnectionIcon();
 
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
@@ -215,11 +222,11 @@
                 ))
             } else {
                 $("#ConnectionIcons").append($(
-                    `<span class="cmd fa fa-arrow-right-from-bracket" id="signInCmd" title="Sign out" 
+                    `<span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out" 
                             data-toggle="tooltip"></span>`
                 ));
             }
-        }
+        }*/
 
         function createUserFiltersDropDownList(users) {
             array.forEach(users => {
@@ -766,13 +773,11 @@
                     text: "Confirmer",
                     click: function () {
                         let user_info = connexionFromForm();
-                        let user = sessionStorage.getItem("access_token");
                         if (user_info) {
                             if (createMode) {
                                 $(this).dialog("close");
-                                LOGIN_USER(user_info, getImagesList, error);
+                                LOGIN_USER(user_info, checkUserConnected, error);
                                 $(".scrollContainer").scrollTop(0);
-                                console.log(JSON.parse(user));
                             } else {
                                 PUT();
                                 //EDIT mode
@@ -792,7 +797,18 @@
 
         function checkUserConnected()
         {
+            let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
+            $("#createAccountCmd").hide()
+            $("#logInCmd").hide();
+            $("#logOutCmd").show();
+            $("#showUserInfo").text(userConnected.Username);
+            //Rajouter les icons manquantes
+            
+        }
 
+        function LogOutUser()
+        {
+            //to do
         }
 
         function ShowLoginForm() {

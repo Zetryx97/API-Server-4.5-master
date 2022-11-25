@@ -78,7 +78,11 @@ function LOGIN_USER(data, successCallBack, errorCallBack)
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(data),
-        success: (data, status, xhr) => {  successCallBack(data, xhr.getResponseHeader("ETag")) },
+        success: (tokenInfo, status, xhr) => {
+            sessionStorage.setItem("access_token",tokenInfo.Access_token)
+            GET_USER(tokenInfo.UserId,successCallBack,errorCallBack); 
+            successCallBack(tokenInfo, xhr.getResponseHeader("ETag"));
+        },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
@@ -95,13 +99,16 @@ function VERIFY_USER(code, successCallBack, errorCallBack)
     });
 }
 
-function GET_USER()
+function GET_USER(userId, successCallBack, errorCallBack)
 {
     $.ajax({
         url: baseUrl + "/accounts/index/" + userId,
         type: 'GET',
         contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: (data, status, xhr) => { return data;  },
+        success: (data, status, xhr) => 
+        {
+            successCallBack(data, xhr.getResponseHeader("ETag"))
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }

@@ -179,6 +179,8 @@
         let previousScrollPosition = 0;
         let appendMode = false;
         let isSignedIn = false;
+        let imgUserId = "";
+        let imgMotsCles = "le"
 
         init_UI();
         HEAD(checkETag, error);
@@ -225,10 +227,10 @@
                 let queryString = "";
                 if (appendMode) {
                     queryString =
-                    `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}`;
+                    `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}`;
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
                 }
                 return queryString;
             }
@@ -262,13 +264,13 @@
                                 </div>
                         `)
                 );
-                if(image.User != null){
-                    if(!imageUsersList.includes(image.User))
+                if(image.UserId != null){
+                    if(!imageUsersList.includes(image.UserId))
                 {
                     $("#filterList").append($(
-                    `<option value="` + image.User + `">` + image.User + `</option>`
+                    `<option value="` + image.UserId + `">` + image.UserId + `</option>`
                 ));
-                imageUsersList.push(image.User);
+                imageUsersList.push(image.UserId);
                 } 
                 }                            
             }

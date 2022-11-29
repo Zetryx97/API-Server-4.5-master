@@ -33,7 +33,7 @@
         <label for="email_input">Courriel</label>
         <input type="email" id="email_input" class="form-control" required>
 
-       
+
         <label for="pwdUser">Mot de passe</label>
         <input type="password" id="pwdUser" class="form-control MatchedPassword" matchedPasswordId="pwdUserConfirm" />
 
@@ -113,13 +113,14 @@
         </div>
         <div class="searchBar">
             <select name="filters" id="filterList" class="searchParameters">
-                <option value="all">Tous les usagers</option>
+                <option value="">Tous les usagers</option>
             </select>
 
-            <input type="text" placeholder="Recherche par mots-clés" class="searchParameters"></input>
+            <input type="text" placeholder="Recherche par mots-clés" class="searchParameters" id="imageSearchBar"
+                value=""></input>
 
             <span class="cmd fa fa-magnifying-glass" id="searchImageCmd" title="Rechercher un image"
-                data-toggle="tooltip">
+                data-toggle="tooltip" onclick="searchImage()">
             </span>
         </div>
 
@@ -148,7 +149,7 @@
                     <div class="note">Cliquez-Déposez une image</div>
                 </form>
             </div>
-        
+
             <div id="confirmDeleteDlg">
                 <span id="confirmationMessage"></span>
             </div>
@@ -179,8 +180,8 @@
         let previousScrollPosition = 0;
         let appendMode = false;
         let isSignedIn = false;
-        let imgUserId = "";
-        let imgMotsCles = "le"
+        let imgUserId = sessionStorage.getItem('imgUserId');
+        let imgMotsCles = sessionStorage.getItem('imgMotsCles');
 
         init_UI();
         HEAD(checkETag, error);
@@ -190,7 +191,7 @@
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //---NAT---//
-        
+
         toggleUserConnectionIcon();
 
         function toggleUserConnectionIcon() {
@@ -210,6 +211,25 @@
         }
         let imageUsersList = [];
 
+        function searchImage() {
+            sessionStorage.setItem("imgMotsCles", document.getElementById("imageSearchBar").value);
+            sessionStorage.setItem("imgUserId", $('#filterList').val());
+            location.reload();
+        }
+
+        function initFilterList(images, ETag) {
+            images.forEach(image => {
+                if (image.UserId != null) {
+                    if (!imageUsersList.includes(image.UserId)) {
+                        $("#filterList").append($(
+                            `<option value="` + image.UserId + `">` + image.UserId + `</option>`
+                        ));
+                        imageUsersList.push(image.UserId);
+                    }
+                }
+            });
+        }
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -227,16 +247,19 @@
                 let queryString = "";
                 if (appendMode) {
                     queryString =
-                    `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
+                        `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId + '&Title=*' + imgMotsCles + '*';
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=`+imgUserId+'&Title=*'+imgMotsCles+'*';
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId + '&Title=*' + imgMotsCles + '*';
                 }
                 return queryString;
             }
+            GET_ALL(initFilterList, error);
             GET_ALL(refreshimagesList, error, prepareQueryString());
-        }       
+        }
         function refreshimagesList(images, ETag) {
+            document.getElementById("imageSearchBar").value = imgMotsCles;
+            $('#filterList').val(imgUserId);
             function insertIntoImageList(image) {
 
                 $("#imagesList").append(
@@ -264,15 +287,6 @@
                                 </div>
                         `)
                 );
-                if(image.UserId != null){
-                    if(!imageUsersList.includes(image.UserId))
-                {
-                    $("#filterList").append($(
-                    `<option value="` + image.UserId + `">` + image.UserId + `</option>`
-                ));
-                imageUsersList.push(image.UserId);
-                } 
-                }                            
             }
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();
@@ -431,29 +445,29 @@
                     of: window
                 },
                 buttons: [{
-                        id: "imageDlgOkBtn",
-                        text: "Title will be changed dynamically",
-                        click: function () {
-                            let image = imageFromForm();
-                            if (image) {
-                                if (createMode) {
-                                    POST(image, getImagesList, error);
-                                    $(".scrollContainer").scrollTop(0);
-                                } else
-                                    PUT(image, getImagesList, error);
-                                resetimageForm();
-                                holdCheckETag = false;
-                                $(this).dialog("close");
-                            }
-                        }
-                    },
-                    {
-                        text: "Annuler",
-                        click: function () {
+                    id: "imageDlgOkBtn",
+                    text: "Title will be changed dynamically",
+                    click: function () {
+                        let image = imageFromForm();
+                        if (image) {
+                            if (createMode) {
+                                POST(image, getImagesList, error);
+                                $(".scrollContainer").scrollTop(0);
+                            } else
+                                PUT(image, getImagesList, error);
+                            resetimageForm();
                             holdCheckETag = false;
                             $(this).dialog("close");
                         }
                     }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }
                 ]
             });
 
@@ -481,24 +495,24 @@
                     of: window
                 },
                 buttons: [{
-                        id: "confirmDeleteDlgOkBtn",
-                        text: "Oui",
-                        click: function () {
-                            holdCheckETag = false;
-                            if (imageIdToDelete)
-                                DELETE(imageIdToDelete, getImagesList, error);
-                            imageIdToDelete = 0;
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: "Annuler",
-                        click: function () {
-                            holdCheckETag = false;
-                            imageIdToDelete = 0;
-                            $(this).dialog("close");
-                        }
+                    id: "confirmDeleteDlgOkBtn",
+                    text: "Oui",
+                    click: function () {
+                        holdCheckETag = false;
+                        if (imageIdToDelete)
+                            DELETE(imageIdToDelete, getImagesList, error);
+                        imageIdToDelete = 0;
+                        $(this).dialog("close");
                     }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        imageIdToDelete = 0;
+                        $(this).dialog("close");
+                    }
+                }
                 ]
             });
 
@@ -583,9 +597,8 @@
 
         $("#icon-site").click(ShowDialogAbout);
 
-        function StoreInfoUser()
-        {
-            
+        function StoreInfoUser() {
+
         }
         //Create account utilities
         $("#creation-account-form").dialog({
@@ -612,23 +625,23 @@
                 of: window
             },
             buttons: [{
-                    text: "Confirmer",
-                    click: function () {
-                        let newUser = registerUserFromForm();
-                        if (newUser) {
-                            $(this).dialog("close");
-                            ShowVerfiedCodeDialog();
-                            CREATE_USER(newUser, getImagesList, error);
-                        }
-                        resetInfoCreationForm();
-                    }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
+                text: "Confirmer",
+                click: function () {
+                    let newUser = registerUserFromForm();
+                    if (newUser) {
                         $(this).dialog("close");
+                        ShowVerfiedCodeDialog();
+                        CREATE_USER(newUser, getImagesList, error);
                     }
+                    resetInfoCreationForm();
                 }
+            },
+            {
+                text: "Annuler",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
             ]
         });
 
@@ -638,7 +651,7 @@
 
         $("#createAccountCmd").click(ShowCreationUserForm);
 
-        function resetInfoCreationForm(){
+        function resetInfoCreationForm() {
             $("#Id_User").val("0");
             $("#username_input").val("");
             $("#email_input").val("");
@@ -665,8 +678,8 @@
         }
         $("#verifiedEmailDialog").dialog({
             title: "Vérification de courriel",
-            autoOpen:false,
-            modal:true,
+            autoOpen: false,
+            modal: true,
             show: {
                 effect: 'fade',
                 speed: 400
@@ -687,25 +700,24 @@
                 of: window
             },
             buttons: [{
-                    text: "Valider",
-                    click: function () {
-                        let codeConfirmation = $("#verifyCodeInput").val();
-                        if(codeConfirmation)
-                        {
-                            $(this).dialog("close");
-                            VERIFY_USER(codeConfirmation, getImagesList, error);
-                            $(".scrollContainer").scrollTop(0);
-                            isSignedIn = true;
-                        }
-                        
-                    }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
+                text: "Valider",
+                click: function () {
+                    let codeConfirmation = $("#verifyCodeInput").val();
+                    if (codeConfirmation) {
                         $(this).dialog("close");
+                        VERIFY_USER(codeConfirmation, getImagesList, error);
+                        $(".scrollContainer").scrollTop(0);
+                        isSignedIn = true;
                     }
+
                 }
+            },
+            {
+                text: "Annuler",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
             ]
         });
 
@@ -742,35 +754,34 @@
                 of: window
             },
             buttons: [{
-                    text: "Confirmer",
-                    click: function () {
-                        let user_info = connexionFromForm();
-                        let user = sessionStorage.getItem("access_token");
-                        if (user_info) {
-                            if (createMode) {
-                                $(this).dialog("close");
-                                LOGIN_USER(user_info, getImagesList, error);
-                                $(".scrollContainer").scrollTop(0);
-                                console.log(JSON.parse(user));
-                            } else {
-                                PUT();
-                                //EDIT mode
-                            }
-
+                text: "Confirmer",
+                click: function () {
+                    let user_info = connexionFromForm();
+                    let user = sessionStorage.getItem("access_token");
+                    if (user_info) {
+                        if (createMode) {
+                            $(this).dialog("close");
+                            LOGIN_USER(user_info, getImagesList, error);
+                            $(".scrollContainer").scrollTop(0);
+                            console.log(JSON.parse(user));
+                        } else {
+                            PUT();
+                            //EDIT mode
                         }
-                    }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
-                        $(this).dialog("close");
+
                     }
                 }
+            },
+            {
+                text: "Annuler",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
             ]
         });
 
-        function checkUserConnected()
-        {
+        function checkUserConnected() {
 
         }
 

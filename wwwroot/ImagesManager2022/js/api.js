@@ -79,7 +79,7 @@ function LOGIN_USER(data, successCallBack, errorCallBack)
         contentType: 'application/json',
         data: JSON.stringify(data),
         success: (tokenInfo, status, xhr) => {
-            sessionStorage.setItem("access_token",tokenInfo.Access_token)
+            window.sessionStorage.setItem("access_token",JSON.stringify(tokenInfo));
             GET_USER(tokenInfo.UserId,successCallBack,errorCallBack); 
             successCallBack(tokenInfo, xhr.getResponseHeader("ETag"));
         },
@@ -107,7 +107,7 @@ function GET_USER(userId, successCallBack, errorCallBack)
         contentType: 'application/json',
         success: (data, status, xhr) => 
         {
-            successCallBack(data, xhr.getResponseHeader("ETag"))
+            successCallBack(data);
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });

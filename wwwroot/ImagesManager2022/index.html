@@ -103,17 +103,25 @@
                     </span>
 
                 </div>
-
                 <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip">
                 </span>
+            </div>
+            <div class="svg-wrapper">
+                
+                <span id="showUserInfo"></span>
+
                 <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out" 
                             data-toggle="tooltip"></span>
+
+                <span class="cmd fa fa-address-card" id="editProfilCmd" title="Votre profil" data-toggle="tooltip"></span>
+
                 <span class="cmd fa fa-arrow-right-to-bracket" id="logInCmd" title="Login" 
                      data-toggle="tooltip"></span>
+                     
                 <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account" 
                     data-toggle="tooltip"></span>
 
-                <span id="showUserInfo"></span>
+               
             </div>
 
         </div>
@@ -189,6 +197,7 @@
         let imgMotsCles = "le"
 
         $("#logOutCmd").hide();
+        $("#editProfilCmd").hide();
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -780,15 +789,28 @@
             $("#createAccountCmd").hide()
             $("#logInCmd").hide();
             $("#logOutCmd").show();
+            $("#editProfilCmd").show();
             $("#showUserInfo").text(userConnected.Username);
+            
             //Rajouter les icons manquantes
             
         }
 
         function LogOutUser()
         {
-            //to do
+            window.sessionStorage.clear();
+            $("#createAccountCmd").show();
+            $("#logInCmd").show();
+            $("#logOutCmd").hide();
+            $("#editProfilCmd").hide();
+            $("#showUserInfo").text("");
+
         }
+
+        $("#logOutCmd").click(() =>{
+            let userIdToDelete = JSON.parse(sessionStorage.getItem("access_token"));
+            LOGOUT_USER(userIdToDelete.UserId,LogOutUser, error);
+        });
 
         function ShowLoginForm() {
             $("#loginDialog").dialog("open");

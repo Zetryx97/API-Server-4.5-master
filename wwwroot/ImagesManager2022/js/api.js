@@ -112,3 +112,17 @@ function GET_USER(userId, successCallBack, errorCallBack)
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
+
+function LOGOUT_USER(userId,successCallBack,errorCallBack)
+{
+    $.ajax({
+        url: baseUrl + "/accounts/logout/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (data, status, xhr) => 
+        {
+            successCallBack(data);
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}

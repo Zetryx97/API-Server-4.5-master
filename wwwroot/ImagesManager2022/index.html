@@ -196,6 +196,7 @@
         let isSignedIn = false;
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
+        let userIsRemembered = false;
 
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
@@ -742,7 +743,51 @@
         }
 
         function userInfoToForm(user) { //for edit user
-            //do code
+           $("#Id_User").val(user.Id);
+           $("#AvatarGUID_input").val(user.AvatarGUID);
+           $("#username_input").val(user.Name);
+           $("#email_input").val(user.Email);
+        }
+
+        function editUser(e)
+        {
+            holdCheckETag = true;
+            createMode = false;
+            GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
+            holdCheckETag = true;
+            ImageUploader.imageRequired('image', false);
+            $("#imageDlg").dialog('option', 'title', "Modification d'image");
+            $("#imageDlgOkBtn").text("Modifier");
+            $("#imageDlg").dialog('open');
+        }
+
+        function resetInfoLoginUser(){
+                $("#email-login").val("");
+                $("#pwd-login").val("");
+                document.getElementById("remember-user").checked = false;
+            
+        }
+
+        function rememberUserConnected()
+        {
+            if(document.getElementById("remember-user").checked)
+            {
+                window.localStorage.setItem("email_login", $("#email-login").val());
+                window.localStorage.setItem("pwd_login", $("#pwd-login").val());
+                window.localStorage.setItem("isChecked",document.getElementById("remember-user").value)
+
+                $("#email-login").val(window.localStorage.getItem("email_login"));
+                $("#pwd-login").val(window.localStorage.getItem("pwd_login"));
+                $("#remember-user").val((window.localStorage.getItem("isChecked")));
+                userIsRemembered = true;
+
+            }
+            else{
+                window.localStorage.clear();
+                document.getElementById("remember-user").checked = false;
+                userIsRemembered = false;
+            }
+            return userIsRemembered;
         }
 
         //Login user utilities
@@ -773,6 +818,11 @@
                     text: "Confirmer",
                     click: function () {
                         let user_info = connexionFromForm();
+                        
+                        if(!rememberUserConnected())
+                        {
+                            resetInfoLoginUser();
+                        }
                         if (user_info) {
                             if (createMode) {
                                 $(this).dialog("close");
@@ -811,7 +861,7 @@
 
         function LogOutUser()
         {
-            window.sessionStorage.clear();
+            window.sessionStorage.removeItem("access_token");
             $("#createAccountCmd").show();
             $("#logInCmd").show();
             $("#logOutCmd").hide();

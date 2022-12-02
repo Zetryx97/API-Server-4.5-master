@@ -197,6 +197,7 @@
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
         let userIsRemembered = false;
+        let tempArray = [];
 
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
@@ -247,6 +248,22 @@
             });
         }
 
+        function fillTempArray(images,ETag){
+            let isUnique = true
+            for(let image of images){
+                for(let tempImg of tempArray){
+                    if(tempImg.Id == image.Id)
+                        isUnique = false;  
+                }
+                if(isUnique)
+                {
+                    tempArray.push(image);   
+                    imagesCount += 1;                  
+                }                              
+                    isUnique = true;               
+            }
+            imagesCount = tempArray.length;
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -260,25 +277,31 @@
         function getImagesList(refresh = true) {
             appendMode = !refresh;
 
-            function prepareQueryString() {
+            function prepareQueryString(searchBy=null) {
                 let queryString = "";
+                if(searchBy != null)
+                    searchBy = '&'+ searchBy+'=*' + imgMotsCles + '*'  
                 if (appendMode) {
-                    queryString =
-                        `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId + '&Title=*' + imgMotsCles + '*';
+                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId + searchBy;  
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId + '&Title=*' + imgMotsCles + '*';
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId + searchBy;
                 }
                 return queryString;
             }
-            GET_ALL(initFilterList, error);
-            GET_ALL(refreshimagesList, error, prepareQueryString());
+
+            GET_ALL(initFilterList, error);      
+            GET_ALL(fillTempArray, error, prepareQueryString('Description'));
+            GET_ALL(fillTempArray, error, prepareQueryString('Title'));
+            GET_ALL(refreshimagesList, error);
+            
         }
+
+
         function refreshimagesList(images, ETag) {
             document.getElementById("imageSearchBar").value = imgMotsCles;
             $('#filterList').val(imgUserId);
             function insertIntoImageList(image) {
-
                 $("#imagesList").append(
                     $(` 
                                 <div class='imageLayout'>
@@ -309,12 +332,18 @@
             previousScrollPosition = $(".scrollContainer").scrollTop();
             if (!appendMode) $("#imagesList").empty();
 
+            // if (appendMode && tempArray.length == 0)
+            //     imagesCount -= appendCount;
+
             if (appendMode && images.length == 0)
                 imagesCount -= appendCount;
 
-            for (let image of images) {
+            for (let image of tempArray) {
                 insertIntoImageList(image);
             }
+            // for (let image of images) {
+            //     insertIntoImageList(image);
+            // }
 
             $(".scrollContainer").scrollTop(previousScrollPosition);
             $(".editCmd").off();

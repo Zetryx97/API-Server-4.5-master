@@ -878,6 +878,7 @@
         function checkUserConnected()
         {
             let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
+            GET_USER_GUID(userConnected.UserId)
             $("#createAccountCmd").hide()
             $("#logInCmd").hide();
             $("#logOutCmd").show();
@@ -891,6 +892,7 @@
         function LogOutUser()
         {
             window.sessionStorage.removeItem("access_token");
+            window.sessionStorage.removeItem("guid_user_connected");
             $("#createAccountCmd").show();
             $("#logInCmd").show();
             $("#logOutCmd").hide();

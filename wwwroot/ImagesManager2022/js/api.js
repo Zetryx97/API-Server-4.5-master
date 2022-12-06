@@ -126,3 +126,16 @@ function LOGOUT_USER(userId,successCallBack,errorCallBack)
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
+function GET_USER_GUID(userId)
+{
+    $.ajax({
+        url: baseUrl + "/accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (data) => 
+        {
+           window.sessionStorage("guid_user_connected", data);
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}

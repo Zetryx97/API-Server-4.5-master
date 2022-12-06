@@ -107,12 +107,8 @@
                 </span>
             </div>
             <div class="svg-wrapper">
-<<<<<<< HEAD
-
-=======
                 
                 <img src="" class="avatar" id="avatarUserConnected">
->>>>>>> 95c143c99dd37775bae151aa1d43423c4fed7225
                 <span id="showUserInfo"></span>
 
                 <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out"
@@ -279,13 +275,15 @@
             appendMode = !refresh;
             function prepareQueryString() {
                 //let keywords = "Caribou"; 
-
-
                 if (appendMode) {
                     queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId;
                     imagesCount += appendCount;
                 } else {
                     queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId;
+                }
+                if(imgMotsCles != null){
+                    queryString+="&keywords="+ imgMotsCles;
+                    console.log(queryString);
                 }
                 //queryString.keywords = "Caribou";
                 //console.log(queryString.keywords);

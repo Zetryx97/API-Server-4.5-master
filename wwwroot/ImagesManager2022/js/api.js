@@ -104,7 +104,7 @@ function LOGIN_USER(data, successCallBack, errorCallBack)
         data: JSON.stringify(data),
         success: (tokenInfo, status, xhr) => {
             window.sessionStorage.setItem("access_token",JSON.stringify(tokenInfo));
-            GET_USER(tokenInfo.UserId,successCallBack,errorCallBack); 
+            GET_USER(tokenInfo.UserId,successCallBack,errorCallBack);
             successCallBack(tokenInfo, xhr.getResponseHeader("ETag"));
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
@@ -131,6 +131,7 @@ function GET_USER(userId, successCallBack, errorCallBack)
         contentType: 'application/json',
         success: (data, status, xhr) => 
         {
+            window.sessionStorage.setItem("user_data",JSON.stringify(data));
             successCallBack(data);
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
@@ -150,4 +151,11 @@ function LOGOUT_USER(userId,successCallBack,errorCallBack)
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
-
+function GET_ID_USER(id, successCallBack, errorCallBack) {
+    $.ajax({
+        url: baseUrl + "/" + id,
+        type: 'GET',
+        success: data => { successCallBack(data); },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });
+}

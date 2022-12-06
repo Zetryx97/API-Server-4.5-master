@@ -52,7 +52,7 @@
             <label for="email-login">Courriel</label><input type="email" id="email-login" required class="form-control">
             <label for="pwd-login">Mot de passe</label> <input type="password" class="form-control" id="pwd-login"
                 required>
-            <input type="checkbox" id="remember-user"> <label for="remember-user">Se souvenir de moi</label>
+            <input type="checkbox" id="checked-user"> <label for="remember-user" value="0">Se souvenir de moi</label>
         </form>
     </div>
 
@@ -107,7 +107,12 @@
                 </span>
             </div>
             <div class="svg-wrapper">
+<<<<<<< HEAD
 
+=======
+                
+                <img src="" class="avatar" id="avatarUserConnected">
+>>>>>>> 95c143c99dd37775bae151aa1d43423c4fed7225
                 <span id="showUserInfo"></span>
 
                 <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out"
@@ -199,6 +204,8 @@
         let UserArray = [];
 
 
+        //window.localStorage.clear();
+        $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
         init_UI();
@@ -464,6 +471,18 @@
         function init_UI() {
             $("#newImageCmd").click(newImage)
 
+            if(window.localStorage.length <= 0)
+            {
+                $("#email-login").val("");
+                $("#pwd-login").val("");
+                document.getElementById("checked-user").checked = false;
+            }
+            else{
+                $("#email-login").val(window.localStorage.getItem("email_login"));
+                $("#pwd-login").val(window.localStorage.getItem("pwd_login"));
+                document.getElementById("checked-user").checked = true;
+            }
+
             $("#imageDlg").dialog({
                 title: "...",
                 autoOpen: false,
@@ -668,6 +687,7 @@
                 of: window
             },
             buttons: [{
+                id: "confirmCreateAccount",
                 text: "Confirmer",
                 click: function () {
                     let newUser = registerUserFromForm();
@@ -689,6 +709,8 @@
         });
 
         function ShowCreationUserForm() {
+            createMode = true;
+            $("#creation-account-form").dialog('option', 'title', "Création d'un usager")
             $("#creation-account-form").dialog("open");
         }
 
@@ -769,7 +791,56 @@
         }
 
         function userInfoToForm(user) { //for edit user
-            //do code
+           $("#Id_User").val(user.Id);
+           $("#AvatarGUID_input").val(user.AvatarGUID);
+           $("#username_input").val(user.Name);
+           $("#email_input").val(user.Email);
+        }
+
+        function editUser(e)
+        {
+            holdCheckETag = true;
+            createMode = false;
+            //GET_ID_USER(e.target.getAttribute("imageid"), userInfoToForm, error);
+            holdCheckETag = true;
+            ImageUploader.imageRequired('image', false);
+            $("#creation-account-form").dialog('option', 'title', "Modification de profil");
+            $("#confirmCreateAccount").text("Modifier");
+            $("#creation-account-form").dialog("option", "buttons",[{id:"deleteUser",text: "Désinscrire"},{id:"modifierUserForm",text:"Modifier"},{id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close");}}]);
+            $("#creation-account-form").dialog('open');
+        }
+
+        $("#editProfilCmd").click((e) =>{
+            editUser(e);
+        });
+
+        function resetInfoLoginUser(){
+                $("#email-login").val(null);
+                $("#pwd-login").val(null);
+                document.getElementById("checked-user").checked = false;
+            
+        }
+
+        function rememberUserConnected()
+        {
+            let isChecked = false;
+            if(document.getElementById("checked-user").checked)
+            {
+                isChecked = true;
+                window.localStorage.setItem("email_login", $("#email-login").val());
+                window.localStorage.setItem("pwd_login", $("#pwd-login").val());
+                window.localStorage.setItem("isChecked",isChecked);
+
+                $("#email-login").val(window.localStorage.getItem("email_login"));
+                $("#pwd-login").val(window.localStorage.getItem("pwd_login"));
+                $("#checked-user").val(window.localStorage.getItem("isChecked"));
+            }
+            else{
+                isChecked = false;
+                window.localStorage.clear();
+                document.getElementById("checked-user").checked = false;
+                resetInfoLoginUser();
+            }
         }
 
         //Login user utilities
@@ -797,22 +868,27 @@
                 of: window
             },
             buttons: [{
-                text: "Confirmer",
-                click: function () {
-                    let user_info = connexionFromForm();
-                    if (user_info) {
-                        if (createMode) {
-                            $(this).dialog("close");
-                            LOGIN_USER(user_info, checkUserConnected, error);
-                            $(".scrollContainer").scrollTop(0);
-                        } else {
-                            PUT();
-                            //EDIT mode
+                    text: "Confirmer",
+                    click: function () {
+                        let user_info = connexionFromForm();
+                        
+                        if (user_info) {
+                            if (createMode) {
+                                $(this).dialog("close");
+                                LOGIN_USER(user_info, checkUserConnected, error);
+                                if(window.localStorage != null)
+                                {
+                                    rememberUserConnected();
+                                }
+                                $(".scrollContainer").scrollTop(0);
+                            } else {
+                                PUT();
+                                //EDIT mode
+                            }
+
                         }
 
-                    }
-
-                }
+                    }    
             },
             {
                 text: "Annuler",
@@ -825,23 +901,37 @@
 
         function checkUserConnected() {
             let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
+            let user = JSON.parse(sessionStorage.getItem("user_data"));
+            if(user.AvatarURL == "")
+            {
+                $("#avatarUserConnected").attr("src", "images/No_Avatar.png");
+            }
+            else
+            {
+                $("#avatarUserConnected").attr("src",user.AvatarURL);
+            }
+           
             $("#createAccountCmd").hide()
             $("#logInCmd").hide();
             $("#logOutCmd").show();
             $("#editProfilCmd").show();
             $("#showUserInfo").text(userConnected.Username);
-
+            $("#avatarUserConnected").show();
+            
             //Rajouter les icons manquantes
 
         }
 
-        function LogOutUser() {
-            window.sessionStorage.clear();
+        function LogOutUser()
+        {
+            window.sessionStorage.removeItem("access_token");
+            window.sessionStorage.removeItem("user_data");
             $("#createAccountCmd").show();
             $("#logInCmd").show();
             $("#logOutCmd").hide();
             $("#editProfilCmd").hide();
             $("#showUserInfo").text("");
+            $("#avatarUserConnected").hide();
 
         }
 

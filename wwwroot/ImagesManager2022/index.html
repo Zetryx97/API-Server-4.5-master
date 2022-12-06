@@ -107,21 +107,21 @@
                 </span>
             </div>
             <div class="svg-wrapper">
-                
+
                 <span id="showUserInfo"></span>
 
-                <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out" 
-                            data-toggle="tooltip"></span>
-
-                <span class="cmd fa fa-address-card" id="editProfilCmd" title="Votre profil" data-toggle="tooltip"></span>
-
-                <span class="cmd fa fa-arrow-right-to-bracket" id="logInCmd" title="Login" 
-                     data-toggle="tooltip"></span>
-                     
-                <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account" 
+                <span class="cmd fa fa-arrow-right-from-bracket" id="logOutCmd" title="Sign out"
                     data-toggle="tooltip"></span>
 
-               
+                <span class="cmd fa fa-address-card" id="editProfilCmd" title="Votre profil"
+                    data-toggle="tooltip"></span>
+
+                <span class="cmd fa fa-arrow-right-to-bracket" id="logInCmd" title="Login" data-toggle="tooltip"></span>
+
+                <span class="cmd fa fa-user-plus" id="createAccountCmd" title="Create account"
+                    data-toggle="tooltip"></span>
+
+
             </div>
 
         </div>
@@ -196,7 +196,8 @@
         let isSignedIn = false;
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
-        let tempArray = [];
+        let UserArray = [];
+
 
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
@@ -238,31 +239,25 @@
             images.forEach(image => {
                 if (image.UserId != null) {
                     if (!imageUsersList.includes(image.UserId)) {
-                        $("#filterList").append($(
-                            `<option value="` + image.UserId + `">` + image.UserId + `</option>`
-                        ));
+                        GET_USER(image.UserId, addUserToFilters, error)
                         imageUsersList.push(image.UserId);
                     }
                 }
             });
+            function addUserToFilters(user, ETag) {
+                if (user != null) {
+                    if (!UserArray.includes(user)) {
+                        UserArray.push(user)
+                    }
+
+                    $("#filterList").append($(
+                        `<option value="` + user.Id + `">` + user.Name + `</option>`
+                    ));
+                }
+            }
+
         }
 
-        function fillTempArray(images,ETag){
-            let isUnique = true
-            for(let image of images){
-                for(let tempImg of tempArray){
-                    if(tempImg.Id == image.Id)
-                        isUnique = false;  
-                }
-                if(isUnique)
-                {
-                    tempArray.push(image);   
-                    imagesCount += 1;                  
-                }                              
-                    isUnique = true;               
-            }
-            imagesCount = tempArray.length;
-        }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -275,25 +270,23 @@
 
         function getImagesList(refresh = true) {
             appendMode = !refresh;
+            function prepareQueryString() {
+                //let keywords = "Caribou"; 
 
-            function prepareQueryString(searchBy=null) {
-                let queryString = "";
-                if(searchBy != null)
-                    searchBy = '&'+ searchBy+'=*' + imgMotsCles + '*'  
+
                 if (appendMode) {
-                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId + searchBy;  
+                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId;
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId + searchBy;
+                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId;
                 }
+                //queryString.keywords = "Caribou";
+                //console.log(queryString.keywords);
+                //queryString = keywords;
                 return queryString;
             }
-
-            GET_ALL(initFilterList, error);      
-            GET_ALL(fillTempArray, error, prepareQueryString('Description'));
-            GET_ALL(fillTempArray, error, prepareQueryString('Title'));
-            GET_ALL(refreshimagesList, error);
-            
+            GET_ALL(initFilterList,error)
+            GET_ALL(refreshimagesList,error,prepareQueryString())
         }
 
 
@@ -301,11 +294,13 @@
             document.getElementById("imageSearchBar").value = imgMotsCles;
             $('#filterList').val(imgUserId);
             function insertIntoImageList(image) {
+                GET_USER(image.UserId, showUserPicture, error)
                 $("#imagesList").append(
                     $(` 
-                                <div class='imageLayout'>
+                                <div class='imageLayout' ">
                                     <div class='imageHeader'>
                                         <div class="imageTitle">${image.Title}</div>
+                                        
                                         <div    class="cmd editCmd  fa fa-pencil-square" 
                                                 imageid="${image.Id}" 
                                                 title="Editer ${image.Title}" 
@@ -320,29 +315,32 @@
                                     <a href="${image.OriginalURL}" target="_blank">
                                         <div    class='image' 
                                                 style="background-image:url('${image.ThumbnailURL}')">
+                                                <img class="avatar" id="img${image.Id}"></img> 
                                         </div>
                                     </a>
                                     <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
                                 </div>
                         `)
                 );
+                function showUserPicture(user, ETag) {
+                    if (user.AvatarURL == "") {
+                        $(`#img${image.Id}`).attr("src", "images/No_Avatar.png");
+                    }
+                    else {
+                        $(`#img${image.Id}`).attr("src", user.AvatarURL);
+                    }
+                }
             }
+
             currentETag = ETag;
             previousScrollPosition = $(".scrollContainer").scrollTop();
             if (!appendMode) $("#imagesList").empty();
 
-            // if (appendMode && tempArray.length == 0)
-            //     imagesCount -= appendCount;
-
             if (appendMode && images.length == 0)
                 imagesCount -= appendCount;
-
-            for (let image of tempArray) {
+            for (let image of images) {
                 insertIntoImageList(image);
             }
-            // for (let image of images) {
-            //     insertIntoImageList(image);
-            // }
 
             $(".scrollContainer").scrollTop(previousScrollPosition);
             $(".editCmd").off();
@@ -799,47 +797,45 @@
                 of: window
             },
             buttons: [{
-                    text: "Confirmer",
-                    click: function () {
-                        let user_info = connexionFromForm();
-                        if (user_info) {
-                            if (createMode) {
-                                $(this).dialog("close");
-                                LOGIN_USER(user_info, checkUserConnected, error);
-                                $(".scrollContainer").scrollTop(0);
-                            } else {
-                                PUT();
-                                //EDIT mode
-                            }
-
+                text: "Confirmer",
+                click: function () {
+                    let user_info = connexionFromForm();
+                    if (user_info) {
+                        if (createMode) {
+                            $(this).dialog("close");
+                            LOGIN_USER(user_info, checkUserConnected, error);
+                            $(".scrollContainer").scrollTop(0);
+                        } else {
+                            PUT();
+                            //EDIT mode
                         }
 
                     }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
-                        $(this).dialog("close");
-                    }
+
                 }
+            },
+            {
+                text: "Annuler",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            }
             ]
         });
 
-        function checkUserConnected()
-        {
+        function checkUserConnected() {
             let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
             $("#createAccountCmd").hide()
             $("#logInCmd").hide();
             $("#logOutCmd").show();
             $("#editProfilCmd").show();
             $("#showUserInfo").text(userConnected.Username);
-            
+
             //Rajouter les icons manquantes
-            
+
         }
 
-        function LogOutUser()
-        {
+        function LogOutUser() {
             window.sessionStorage.clear();
             $("#createAccountCmd").show();
             $("#logInCmd").show();
@@ -849,9 +845,9 @@
 
         }
 
-        $("#logOutCmd").click(() =>{
+        $("#logOutCmd").click(() => {
             let userIdToDelete = JSON.parse(sessionStorage.getItem("access_token"));
-            LOGOUT_USER(userIdToDelete.UserId,LogOutUser, error);
+            LOGOUT_USER(userIdToDelete.UserId, LogOutUser, error);
         });
 
         function ShowLoginForm() {

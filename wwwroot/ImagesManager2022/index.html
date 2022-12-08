@@ -798,9 +798,11 @@
 
         function editUser(e)
         {
+            let userConnected = JSON.parse(window.sessionStorage.getItem("user_data"));
             holdCheckETag = true;
             createMode = false;
-            //GET_ID_USER(e.target.getAttribute("imageid"), userInfoToForm, error);
+            $("#username_input").val(userConnected.Name);
+            $("#email_input").val(userConnected.Email);
             holdCheckETag = true;
             ImageUploader.imageRequired('image', false);
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");

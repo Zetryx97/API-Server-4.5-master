@@ -42,8 +42,8 @@ body {
     align-items: center;
 }
 .headerLayout {
-    display: grid;
-    grid-template-columns: 80px auto 60px;
+    display: flex;
+    justify-content: center;
     align-items: center;
 }
 .outLinedText {

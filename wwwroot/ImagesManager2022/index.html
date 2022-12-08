@@ -70,7 +70,7 @@
             <div class="headerLayout">
                 <img id="icon-site" src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
                     title="Gestionnaire d'images">
-                <div style="display:flex">
+                <div>
                     <span class="header outLinedText tbg-yellow">
                         P
                     </span>
@@ -101,10 +101,11 @@
                     <span class="header outLinedText tbg-yellow">
                         D
                     </span>
-
+                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
+                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip"></span>
                 </div>
-                <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip">
-                </span>
+                
+               
             </div>
             <div class="svg-wrapper">
                 
@@ -804,7 +805,12 @@
             ImageUploader.imageRequired('image', false);
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");
             $("#confirmCreateAccount").text("Modifier");
-            $("#creation-account-form").dialog("option", "buttons",[{id:"deleteUser",text: "Désinscrire"},{id:"modifierUserForm",text:"Modifier"},{id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close");}}]);
+            $("#creation-account-form").dialog("option", "buttons",
+            [
+                {id:"deleteUser",text: "Désinscrire"},
+                {id:"modifierUserForm",text:"Modifier"},
+                {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close");}}
+            ]);
             $("#creation-account-form").dialog('open');
         }
 
@@ -878,7 +884,7 @@
                                 {
                                     rememberUserConnected();
                                 }
-                                $(".scrollContainer").scrollTop(0);
+                                
                             } else {
                                 PUT();
                                 //EDIT mode
@@ -956,6 +962,8 @@
             }
             return false;
         }
+
+        
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     </script>

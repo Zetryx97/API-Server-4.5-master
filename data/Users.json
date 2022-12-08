@@ -10,7 +10,7 @@
   },
   {
     "Id": 2,
-    "Name": "Nicolas Chourot",
+    "Name": "Nicolas Chourot1",
     "Email": "nicolaschourot@videotron.ca",
     "Password": "********",
     "Created": 1666908912,
@@ -20,7 +20,7 @@
   },
   {
     "Id": 4,
-    "Name": "Gab CLG",
+    "Name": "Testttt",
     "Email": "lessardgabriel35@gmail.com",
     "Password": "Gabriel11",
     "AvatarGUID": "",

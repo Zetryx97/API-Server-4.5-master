@@ -28,6 +28,30 @@ function GET_ALL(successCallBack, errorCallBack, queryString = null) {
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }
+
+
+// function GET_IMAGE_USER(){
+//     GET_ALL(initFilterList, error);   
+// }
+
+// function fillTempArray(images,ETag){
+//     let isUnique = true
+//     for(let image of images){
+//         for(let tempImg of tempArray){
+//             if(tempImg.Id == image.Id)
+//                 isUnique = false;  
+//         }
+//         if(isUnique)
+//         {
+//             tempArray.push(image);   
+//             imagesCount += 1;                  
+//         }                              
+//             isUnique = true;               
+//     }
+//     imagesCount = tempArray.length;
+// }
+
+
 function POST(data, successCallBack, errorCallBack) {
     $.ajax({
         url: apiBaseURL,

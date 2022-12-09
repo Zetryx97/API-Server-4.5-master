@@ -202,11 +202,14 @@
         let userConnected = JSON.parse(sessionStorage.getItem("access_token"));  
         let userData = JSON.parse(sessionStorage.getItem("user_data"));
 
+       
+
 
         //window.localStorage.clear();
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
+        //window.sessionStorage.removeItem("user_data");
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -214,7 +217,7 @@
         }, periodicRefreshPeriod * 1000);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //---NAT---//
+        //---NAT---//   
 
         toggleUserConnectionIcon();
 
@@ -240,6 +243,8 @@
             sessionStorage.setItem("imgUserId", $('#filterList').val());
             location.reload();
         }
+
+        
 
         function initFilterList(images, ETag) {
             images.forEach(image => {
@@ -413,6 +418,8 @@
             $("#imageDlgOkBtn").text("Modifier");
             $("#imageDlg").dialog('open');
         }
+
+        
 
         function deleteimage(e) {
             holdCheckETag = true;
@@ -798,6 +805,8 @@
 
         function editUser(e)
         {
+            // let userConnected = JSON.parse(window.sessionStorage.getItem("user_data"));
+            // let userInfo =  JSON.parse(window.sessionStorage.getItem("access_token"));
             holdCheckETag = true;
             createMode = false;
             $("#username_input").val(userData.Name);

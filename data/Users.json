@@ -36,5 +36,14 @@
     "AvatarURL": "",
     "Created": 1669144225,
     "VerifyCode": 487963
+  },
+  {
+    "Id": 6,
+    "Name": "Vincent Lessard",
+    "Email": "gabsmurf69@gmail.com",
+    "Password": "Mnhjkl69",
+    "AvatarGUID": "",
+    "Created": 1670625660,
+    "VerifyCode": 636385
   }
 ]

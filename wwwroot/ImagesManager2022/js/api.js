@@ -181,7 +181,7 @@ function PUT_USER(user, successCallBack, errorCallBack) {
         contentType: 'application/json',
         headers: {Authorization: "Bearer " + tokenUser.Access_token },
         data: JSON.stringify(user),
-        success: () => { successCallBack() },
+        success: () => { window.sessionStorage.setItem("user_data",JSON.stringify(user)); },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }

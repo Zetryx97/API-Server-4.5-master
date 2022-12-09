@@ -207,7 +207,6 @@
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
-        window.sessionStorage.removeItem("user_data");
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -799,13 +798,11 @@
 
         function editUser(e)
         {
-            let userConnected = JSON.parse(window.sessionStorage.getItem("user_data"));
-            let userInfo =  JSON.parse(window.sessionStorage.getItem("access_token"));
             holdCheckETag = true;
             createMode = false;
-            $("#username_input").val(userConnected.Name);
-            $("#email_input").val(userConnected.Email);
-            ImageUploader.setImage('avatar', userConnected.AvatarURL);
+            $("#username_input").val(userData.Name);
+            $("#email_input").val(userData.Email);
+            ImageUploader.setImage('avatar', userData.AvatarURL);
            
             holdCheckETag = true;
             ImageUploader.imageRequired('image', false);
@@ -838,6 +835,7 @@
                     Email: $("#email_input").val(),
                     Password: $("#pwdUser").val(),
                     AvatarGUID: userInfo.AvatarGUID,
+                    AvatarURL: userInfo.AvatarURL,
                     ImageData: ImageUploader.getImageData('avatar'),
                 };
                 return user;
@@ -938,23 +936,22 @@
             if(userData != null)
             {
 
-
-            if(userData.AvatarURL == "")
-            {
-                $("#avatarUserConnected").attr("src", "images/No_Avatar.png");
-            }
-            else
-            {
-                $("#avatarUserConnected").attr("src",userData.AvatarURL);
-            }
-           
-            $("#createAccountCmd").hide()
-            $("#logInCmd").hide();
-            $("#logOutCmd").show();
-            $("#editProfilCmd").show();
-            $("#showUserInfo").text(userConnected.Username);
-            $("#avatarUserConnected").show();
-            }
+                if(userData.AvatarURL == "" || userData.AvatarURL == null)
+                {
+                    $("#avatarUserConnected").attr("src", "images/No_Avatar.png");
+                }
+                else
+                {
+                    $("#avatarUserConnected").attr("src",userData.AvatarURL);
+                }
+            
+                $("#createAccountCmd").hide()
+                $("#logInCmd").hide();
+                $("#logOutCmd").show();
+                $("#editProfilCmd").show();
+                $("#showUserInfo").text(userData.Name);
+                $("#avatarUserConnected").show();
+                }
             //Rajouter les icons manquantes
 
         }

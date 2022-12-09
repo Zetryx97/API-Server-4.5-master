@@ -198,6 +198,7 @@
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
         let UserArray = [];
+        let userConnectedTemp;
 
 
         //window.localStorage.clear();
@@ -283,11 +284,8 @@
                 }
                 if(imgMotsCles != null){
                     queryString+="&keywords="+ imgMotsCles;
-                    console.log(queryString);
                 }
-                //queryString.keywords = "Caribou";
-                //console.log(queryString.keywords);
-                //queryString = keywords;
+
                 return queryString;
             }
             GET_ALL(initFilterList,error)
@@ -303,19 +301,8 @@
                 $("#imagesList").append(
                     $(` 
                                 <div class='imageLayout' ">
-                                    <div class='imageHeader'>
-                                        <div class="imageTitle">${image.Title}</div>
-                                        
-                                        <div    class="cmd editCmd  fa fa-pencil-square" 
-                                                imageid="${image.Id}" 
-                                                title="Editer ${image.Title}" 
-                                                data-toggle="tooltip">
-                                        </div>
-                                        <div    class="cmd deleteCmd fa fa-window-close" 
-                                                imageid="${image.Id}" 
-                                                title="Effacer ${image.Title}" 
-                                                data-toggle="tooltip">
-                                        </div>
+                                    <div class='imageHeader' id="${image.Id}">
+                                        <div class="imageTitle" id=${image.Id}>${image.Title}</div>
                                     </div>
                                     <a href="${image.OriginalURL}" target="_blank">
                                         <div    class='image' 
@@ -327,6 +314,19 @@
                                 </div>
                         `)
                 );
+                if(userConnectedTemp!=null && image.UserId == userConnected.Id)
+                $(`#${image.Id}`).append($(`                    
+                                        <div    class="cmd editCmd  fa fa-pencil-square" 
+                                                imageid="${image.Id}" 
+                                                title="Editer ${image.Title}" 
+                                                data-toggle="tooltip">
+                                        </div>
+                                        <div    class="cmd deleteCmd fa fa-window-close" 
+                                                imageid="${image.Id}" 
+                                                title="Effacer ${image.Title}" 
+                                                data-toggle="tooltip">
+                                        </div>
+                `));
                 function showUserPicture(user, ETag) {
                     if (user.AvatarURL == "") {
                         $(`#img${image.Id}`).attr("src", "images/No_Avatar.png");
@@ -899,6 +899,7 @@
 
         function checkUserConnected() {
             let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
+            userConnectedTemp = userConnected;
             let user = JSON.parse(sessionStorage.getItem("user_data"));
             if(user.AvatarURL == "")
             {

@@ -199,7 +199,8 @@
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
         let UserArray = [];
-        let userConnectedTemp;
+        let userConnected = JSON.parse(sessionStorage.getItem("access_token"));  
+        let userData = JSON.parse(sessionStorage.getItem("user_data"));
 
 
         //window.localStorage.clear();
@@ -244,7 +245,7 @@
             images.forEach(image => {
                 if (image.UserId != null) {
                     if (!imageUsersList.includes(image.UserId)) {
-                        GET_USER(image.UserId, addUserToFilters, error)
+                        GET_USER_LIST(image.UserId, addUserToFilters, error)
                         imageUsersList.push(image.UserId);
                     }
                 }
@@ -298,7 +299,7 @@
             document.getElementById("imageSearchBar").value = imgMotsCles;
             $('#filterList').val(imgUserId);
             function insertIntoImageList(image) {
-                GET_USER(image.UserId, showUserPicture, error)
+                GET_USER_LIST(image.UserId, showUserPicture, error)
                 $("#imagesList").append(
                     $(` 
                                 <div class='imageLayout' ">
@@ -315,7 +316,7 @@
                                 </div>
                         `)
                 );
-                if(userConnectedTemp!=null && image.UserId == userConnected.Id)
+                if(userConnected!=null && image.UserId == userConnected.UserId)
                 $(`#${image.Id}`).append($(`                    
                                         <div    class="cmd editCmd  fa fa-pencil-square" 
                                                 imageid="${image.Id}" 
@@ -881,7 +882,7 @@
                         if (user_info) {
                             if (createMode) {
                                 $(this).dialog("close");
-                                LOGIN_USER(user_info, checkUserConnected, error);
+                                LOGIN_USER(user_info, dummyFunc, error);
                                 if(window.localStorage != null)
                                 {
                                     rememberUserConnected();
@@ -905,17 +906,21 @@
             ]
         });
 
+        function dummyFunc(){}
+
+        checkUserConnected();
         function checkUserConnected() {
-            let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
-            userConnectedTemp = userConnected;
-            let user = JSON.parse(sessionStorage.getItem("user_data"));
-            if(user.AvatarURL == "")
+            if(userData != null)
+            {
+
+
+            if(userData.AvatarURL == "")
             {
                 $("#avatarUserConnected").attr("src", "images/No_Avatar.png");
             }
             else
             {
-                $("#avatarUserConnected").attr("src",user.AvatarURL);
+                $("#avatarUserConnected").attr("src",userData.AvatarURL);
             }
            
             $("#createAccountCmd").hide()
@@ -924,7 +929,7 @@
             $("#editProfilCmd").show();
             $("#showUserInfo").text(userConnected.Username);
             $("#avatarUserConnected").show();
-            
+            }
             //Rajouter les icons manquantes
 
         }

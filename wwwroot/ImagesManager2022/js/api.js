@@ -138,6 +138,20 @@ function GET_USER(userId, successCallBack, errorCallBack)
     });
 }
 
+function GET_USER_LIST(userId, successCallBack, errorCallBack)
+{
+    $.ajax({
+        url: baseUrl + "/accounts/index/" + userId,
+        type: 'GET',
+        contentType: 'application/json',
+        success: (data, status, xhr) => 
+        {
+            successCallBack(data);
+        },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}
+
 function LOGOUT_USER(userId,successCallBack,errorCallBack)
 {
     $.ajax({

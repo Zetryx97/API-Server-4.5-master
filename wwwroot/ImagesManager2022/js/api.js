@@ -159,3 +159,15 @@ function GET_ID_USER(id, successCallBack, errorCallBack) {
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }
+function PUT_USER(user, successCallBack, errorCallBack) {
+    let tokenUser = JSON.parse(window.sessionStorage.getItem("access_token"));
+    $.ajax({
+        url: baseUrl + "/accounts/modify/" + user.Id,
+        type: 'PUT',
+        contentType: 'application/json',
+        headers: {Authorization: "Bearer " + tokenUser.Access_token },
+        data: JSON.stringify(user),
+        success: () => { successCallBack() },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) }
+    });
+}

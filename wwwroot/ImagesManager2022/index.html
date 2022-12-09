@@ -205,6 +205,7 @@
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
+        window.sessionStorage.removeItem("user_data");
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -468,8 +469,7 @@
 
 
         function init_UI() {
-            $("#newImageCmd").click(newImage)
-
+            $("#newImageCmd").click(newImage);
             if(window.localStorage.length <= 0)
             {
                 $("#email-login").val("");
@@ -799,10 +799,13 @@
         function editUser(e)
         {
             let userConnected = JSON.parse(window.sessionStorage.getItem("user_data"));
+            let userInfo =  JSON.parse(window.sessionStorage.getItem("access_token"));
             holdCheckETag = true;
             createMode = false;
             $("#username_input").val(userConnected.Name);
             $("#email_input").val(userConnected.Email);
+            ImageUploader.setImage('avatar', userConnected.AvatarURL);
+           
             holdCheckETag = true;
             ImageUploader.imageRequired('image', false);
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");
@@ -810,10 +813,37 @@
             $("#creation-account-form").dialog("option", "buttons",
             [
                 {id:"deleteUser",text: "Désinscrire"},
-                {id:"modifierUserForm",text:"Modifier"},
-                {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close");}}
+                {id:"modifierUserForm",text:"Modifier", click: function (){ 
+                    let user = infoFromEditForm();
+                     if(user) 
+                     { 
+                        PUT_USER(user,checkUserConnected,error); 
+                        $("#creation-account-form").dialog("close"); 
+                        $("#showUserInfo").text(userConnected.Name);
+                        $("#username_input").val(userConnected.Name);
+                    } 
+                }},
+                {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}
             ]);
             $("#creation-account-form").dialog('open');
+        }
+        function infoFromEditForm()
+        {
+            let userInfo  = JSON.parse(window.sessionStorage.getItem("user_data"));
+            if ($("#creation-account-form")[0].checkValidity()) {
+                let user = {
+                    Id: userInfo.Id,
+                    Name: $("#username_input").val(),
+                    Email: $("#email_input").val(),
+                    Password: $("#pwdUser").val(),
+                    AvatarGUID: userInfo.AvatarGUID,
+                    ImageData: ImageUploader.getImageData('avatar'),
+                };
+                return user;
+            } else {
+                $("#creation-account-form")[0].reportValidity();
+            }
+            return false;
         }
 
         $("#editProfilCmd").click((e) =>{
@@ -886,12 +916,7 @@
                                 {
                                     rememberUserConnected();
                                 }
-                                
-                            } else {
-                                PUT();
-                                //EDIT mode
                             }
-
                         }
 
                     }    
@@ -907,6 +932,12 @@
 
         function checkUserConnected() {
             let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
+            if(createMode == false)
+            {
+                $("#showUserInfo").text(userConnected.Username);
+                $("#username_input").val(userConnected.Username);
+            }
+            
             let user = JSON.parse(sessionStorage.getItem("user_data"));
             if(user.AvatarURL == "")
             {

@@ -45,5 +45,14 @@
     "AvatarGUID": "",
     "Created": 1670625660,
     "VerifyCode": 636385
+  },
+  {
+    "Id": 7,
+    "Name": "Gabriel Rondeau",
+    "Email": "gablessard97@gmail.com",
+    "Password": "Mnhjkl63",
+    "AvatarGUID": "",
+    "Created": 1670639324,
+    "VerifyCode": "verified"
   }
 ]

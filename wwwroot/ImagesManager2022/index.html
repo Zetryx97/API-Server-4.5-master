@@ -70,7 +70,7 @@
             <div class="headerLayout">
                 <img id="icon-site" src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
                     title="Gestionnaire d'images">
-                <div>
+                <div id="Logo">
                     <span class="header outLinedText tbg-yellow">
                         P
                     </span>
@@ -102,7 +102,7 @@
                         D
                     </span>
                     <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>
+                
                 </div>
                 
                
@@ -221,6 +221,7 @@
         //---NAT---//   
 
         toggleUserConnectionIcon();
+        changeOrderIcon();
 
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
@@ -236,6 +237,13 @@
                             data-toggle="tooltip"></span>`
                 ));
             }
+        }
+
+        function changeOrderIcon(){
+            if(orderBy != "asc")
+                $("#Logo").append($(`<span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>`));
+            else
+            $("#Logo").append($(`<span class="cmd fa fa-arrow-up-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>`));  
         }
         let imageUsersList = [];
 
@@ -285,7 +293,17 @@
             }
 
         }
-
+        function ShowImageDetails(e) {
+            console.log(e)
+            holdCheckETag = true;
+            createMode = false;
+            //GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
+            holdCheckETag = true;
+            ImageUploader.imageRequired('image', false);
+            $("#imageDlg").dialog('option', 'title', "Modification d'image");
+            $("#imageDlgOkBtn").text("Modifier");
+            $("#imageDlg").dialog("open");
+        }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -324,20 +342,21 @@
                 GET_USER_LIST(image.UserId, showUserPicture, error)
                 $("#imagesList").append(
                     $(` 
-                                <div class='imageLayout' ">
+                                <div class='imageLayout'>
                                     <div class='imageHeader' id="${image.Id}">
-                                        <div class="imageTitle" id=${image.Id}>${image.Title}</div>
+                                        <div class="imageTitle" id=${image.Id}>${image.Title} </div>
                                     </div>
-                                    <a href="${image.OriginalURL}" target="_blank">
+                                    
                                         <div    class='image' 
-                                                style="background-image:url('${image.ThumbnailURL}')">
+                                                style="background-image:url('${image.ThumbnailURL}')"
+                                                onclick="ShowImageDetails(${image.Id})">
                                                 <img class="avatar" id="img${image.Id}"></img> 
-                                        </div>
-                                    </a>
+                                        </div>                                    
                                     <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
                                 </div>
                         `)
                 );
+                //<a href="${image.OriginalURL}" target="_blank">
                 if(userConnected!=null && image.UserId == userConnected.UserId)
                 $(`#${image.Id}`).append($(`                    
                                         <div    class="cmd editCmd  fa fa-pencil-square" 
@@ -435,6 +454,17 @@
             $("#imageDlgOkBtn").text("Modifier");
             $("#imageDlg").dialog('open');
         }
+
+        function observeimage(e) {
+            holdCheckETag = true;
+            createMode = false;
+            GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
+            holdCheckETag = true;
+            ImageUploader.imageRequired('image', false);
+            $("#imageDlg").dialog('option', 'title', "Modification d'image");
+            $("#imageDlg").dialog('open');
+        }
+
 
         
 

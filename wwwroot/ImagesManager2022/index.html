@@ -172,6 +172,8 @@
             <div id="errorDlg">
                 <span id="errorMessage"></span>
             </div>
+
+            <div id="deleteUserDialog">Voulez vous vraiment effacer votre compte ?</div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
@@ -200,7 +202,7 @@
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
         let UserArray = [];
         let userConnected = JSON.parse(sessionStorage.getItem("access_token"));  
-        let userData = JSON.parse(sessionStorage.getItem("user_data"));
+        let userData = JSON.parse(sessionStorage.getItem("user"));
         let orderBy = sessionStorage.getItem("orderBy");
 
        
@@ -210,7 +212,6 @@
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
-        //window.sessionStorage.removeItem("user_data");
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -852,8 +853,6 @@
 
         function editUser(e)
         {
-            // let userConnected = JSON.parse(window.sessionStorage.getItem("user_data"));
-            // let userInfo =  JSON.parse(window.sessionStorage.getItem("access_token"));
             holdCheckETag = true;
             createMode = false;
             $("#username_input").val(userData.Name);
@@ -866,7 +865,7 @@
             $("#confirmCreateAccount").text("Modifier");
             $("#creation-account-form").dialog("option", "buttons",
             [
-                {id:"deleteUser",text: "Désinscrire"},
+                {id:"deleteUser",text: "Désinscrire", click: function() { ShowDeleteUserDlg();}},
                 {id:"modifierUserForm",text:"Modifier", click: function (){ 
                     let user = infoFromEditForm();
                      if(user) 
@@ -883,7 +882,7 @@
         }
         function infoFromEditForm()
         {
-            let userInfo  = JSON.parse(window.sessionStorage.getItem("user_data"));
+            let userInfo  = JSON.parse(window.sessionStorage.getItem("user"));
             if ($("#creation-account-form")[0].checkValidity()) {
                 let user = {
                     Id: userInfo.Id,
@@ -966,7 +965,7 @@
                         if (user_info) {
                             if (createMode) {
                                 $(this).dialog("close");
-                                LOGIN_USER(user_info, dummyFunc, error);
+                                LOGIN_USER(user_info, checkUserConnected, error);
                                 if(window.localStorage != null)
                                 {
                                     rememberUserConnected();
@@ -985,10 +984,7 @@
             ]
         });
 
-        function dummyFunc(){}
-
-        checkUserConnected();
-        function checkUserConnected() {
+        function checkUserConnected(userData) {
             if(userData != null)
             {
 
@@ -1007,15 +1003,14 @@
                 $("#editProfilCmd").show();
                 $("#showUserInfo").text(userData.Name);
                 $("#avatarUserConnected").show();
-                }
-            //Rajouter les icons manquantes
+            }
 
         }
 
         function LogOutUser()
         {
             window.sessionStorage.removeItem("access_token");
-            window.sessionStorage.removeItem("user_data");
+            window.sessionStorage.removeItem("user");
             $("#createAccountCmd").show();
             $("#logInCmd").show();
             $("#logOutCmd").hide();
@@ -1046,6 +1041,56 @@
                 $("#loginForm")[0].reportValidity();
             }
             return false;
+        }
+
+        //Delete user
+
+        $("#deleteUserDialog").dialog({
+            title: "Attention!",
+            autoOpen: false,
+            modal: true,
+            show: {
+                effect: 'fade',
+                speed: 400
+            },
+            hide: {
+                effect: 'fade',
+                speed: 400
+            },
+            width: 500,
+            minWidth: 500,
+            maxWidth: 500,
+            height: 400,
+            minHeight: 230,
+            maxHeight: 500,
+            position: {
+                my: "top",
+                at: "top",
+                of: window
+            },
+            buttons: 
+            [
+                {
+                    id: "deleteAccountUser",
+                    text: "Retirer mon compte",
+                    click: function () {
+                        
+                    //do shit
+                    }    
+                },
+                {
+                    text:"Annuler",
+                    click: function ()
+                    {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+
+        function ShowDeleteUserDlg()
+        {
+            $("#deleteUserDialog").dialog("open");
         }
 
         

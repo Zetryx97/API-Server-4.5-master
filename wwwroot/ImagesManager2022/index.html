@@ -102,7 +102,7 @@
                         D
                     </span>
                     <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip"></span>
+                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>
                 </div>
                 
                
@@ -201,6 +201,7 @@
         let UserArray = [];
         let userConnected = JSON.parse(sessionStorage.getItem("access_token"));  
         let userData = JSON.parse(sessionStorage.getItem("user_data"));
+        let orderBy = sessionStorage.getItem("orderBy");
 
        
 
@@ -244,13 +245,30 @@
             location.reload();
         }
 
+        function changeOrder(){
+            if(orderBy != "asc")
+                sessionStorage.setItem("orderBy", "asc")
+            else
+                sessionStorage.setItem("orderBy", "desc")             
+            location.reload();
+        }
+
         
 
         function initFilterList(images, ETag) {
             images.forEach(image => {
                 if (image.UserId != null) {
                     if (!imageUsersList.includes(image.UserId)) {
-                        GET_USER_LIST(image.UserId, addUserToFilters, error)
+                        if(userData != null && image.UserId == userData.Id)
+                        {
+                            $("#filterList").append($(
+                            `<option value="` + image.UserId + `">Mes images</option>`
+                            ));
+                        }
+                        else
+                        {
+                            GET_USER_LIST(image.UserId, addUserToFilters, error)               
+                        }
                         imageUsersList.push(image.UserId);
                     }
                 }
@@ -260,10 +278,9 @@
                     if (!UserArray.includes(user)) {
                         UserArray.push(user)
                     }
-
                     $("#filterList").append($(
                         `<option value="` + user.Id + `">` + user.Name + `</option>`
-                    ));
+                    ));            
                 }
             }
 
@@ -284,10 +301,10 @@
             function prepareQueryString() {
                 //let keywords = "Caribou"; 
                 if (appendMode) {
-                    queryString = `?sort=Date,desc&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId;
+                    queryString = `?sort=Date,${orderBy}&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId;
                     imagesCount += appendCount;
                 } else {
-                    queryString = `?sort=Date,desc&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId;
+                    queryString = `?sort=Date,${orderBy}&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId;
                 }
                 if(imgMotsCles != null){
                     queryString+="&keywords="+ imgMotsCles;

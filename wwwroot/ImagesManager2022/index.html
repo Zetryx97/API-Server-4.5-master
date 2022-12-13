@@ -832,7 +832,6 @@
             ImageUploader.setImage('avatar', userInfoProfil.AvatarURL);
            
             holdCheckETag = true;
-            ImageUploader.imageRequired('image', false);
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");
             $("#confirmCreateAccount").text("Modifier");
             $("#creation-account-form").dialog("option", "buttons",
@@ -843,10 +842,11 @@
                      if(user) 
                      { 
                         userLogin.Name = $("#username_input").val();
+
                         PUT_USER(user,checkUserConnected,error); 
                         $("#creation-account-form").dialog("close"); 
                         $("#showUserInfo").text(userLogin.Name);
-                        $("#username_input").val(userLogin.Name);
+                        $("#username_input").val(userLogin.Name);    
                     } 
                 }},
                 {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}
@@ -871,6 +871,11 @@
                 $("#creation-account-form")[0].reportValidity();
             }
             return false;
+        }
+
+        function test()
+        {
+            
         }
 
         $("#editProfilCmd").click((e) =>{

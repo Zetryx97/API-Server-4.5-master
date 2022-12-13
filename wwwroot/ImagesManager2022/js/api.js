@@ -180,7 +180,10 @@ function PUT_USER(user, successCallBack, errorCallBack) {
         contentType: 'application/json',
         headers: {Authorization: "Bearer " + tokenUser.Access_token },
         data: JSON.stringify(user),
-        success: () => { window.sessionStorage.setItem("user",JSON.stringify(user)); successCallBack(user); },
+        success: () => {
+            GET_USER(user.Id,successCallBack,errorCallBack); 
+            successCallBack(user); 
+        },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }

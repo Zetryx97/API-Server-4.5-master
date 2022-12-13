@@ -847,7 +847,6 @@
                         $("#creation-account-form").dialog("close"); 
                         $("#showUserInfo").text(userLogin.Name);
                         $("#username_input").val(userLogin.Name);
-                        ImageUploader.setImage('avatar', userInfoProfil.AvatarURL);
                     } 
                 }},
                 {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}

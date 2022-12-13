@@ -824,6 +824,7 @@
         function editUser(e)
         {
             let userInfoProfil = JSON.parse(sessionStorage.getItem("user"));
+            let userLogin = JSON.parse(sessionStorage.getItem("access_token"))
             holdCheckETag = true;
             createMode = false;
             $("#username_input").val(userInfoProfil.Name);
@@ -836,15 +837,16 @@
             $("#confirmCreateAccount").text("Modifier");
             $("#creation-account-form").dialog("option", "buttons",
             [
-                {id:"deleteUser",text: "Désinscrire", click: function() { ShowDeleteUserDlg();}},
+                {id:"deleteUser",text: "Désinscrire", click: function() {$(this).dialog("close"); ShowDeleteUserDlg();}},
                 {id:"modifierUserForm",text:"Modifier", click: function (){ 
                     let user = infoFromEditForm();
                      if(user) 
                      { 
+                        userLogin.Name = $("#username_input").val();
                         PUT_USER(user,checkUserConnected,error); 
                         $("#creation-account-form").dialog("close"); 
-                        $("#showUserInfo").text(userConnected.Name);
-                        $("#username_input").val(userConnected.Name);
+                        $("#showUserInfo").text(userLogin.Name);
+                        $("#username_input").val(userLogin.Name);
                     } 
                 }},
                 {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}
@@ -1031,9 +1033,9 @@
             width: 500,
             minWidth: 500,
             maxWidth: 500,
-            height: 400,
+            height: 250,
             minHeight: 230,
-            maxHeight: 500,
+            maxHeight: 400,
             position: {
                 my: "top",
                 at: "top",
@@ -1045,8 +1047,10 @@
                     id: "deleteAccountUser",
                     text: "Retirer mon compte",
                     click: function () {
-                        
-                    //do shit
+                        let user = JSON.parse(sessionStorage.getItem("user"));
+
+                        DELETE_USER_ACCOUNT(user.Id,LogOutUser,error);
+                    
                     }    
                 },
                 {

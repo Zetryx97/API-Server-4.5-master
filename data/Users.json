@@ -20,12 +20,13 @@
   },
   {
     "Id": 4,
-    "Name": "Testttt",
+    "Name": "Gabriel Lessard Jr",
     "Email": "lessardgabriel35@gmail.com",
     "Password": "Gabriel11",
     "AvatarGUID": "",
+    "AvatarURL": "",
     "Created": 1669138313,
-    "VerifyCode": 458458
+    "VerifyCode": "verified"
   },
   {
     "Id": 5,
@@ -53,6 +54,7 @@
     "Email": "gablessard97@gmail.com",
     "Password": "Mnhjkl63",
     "AvatarGUID": "",
+    "AvatarURL": "",
     "Created": 1670639324,
     "VerifyCode": "verified"
   }

@@ -180,7 +180,22 @@ function PUT_USER(user, successCallBack, errorCallBack) {
         contentType: 'application/json',
         headers: {Authorization: "Bearer " + tokenUser.Access_token },
         data: JSON.stringify(user),
-        success: () => { window.sessionStorage.setItem("user",JSON.stringify(user)); },
+        success: () => {
+            GET_USER(user.Id,successCallBack,errorCallBack); 
+            successCallBack(user); 
+        },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }
+function DELETE_USER_ACCOUNT(userId, successCallBack, errorCallBack) {
+    let token = sessionStorage.getItem("access_token");
+ 
+     $.ajax({
+         url: baseUrl + "/accounts/remove/" + userId,
+         type: 'GET',
+         contentType: 'application/json',
+         headers : {Authorization: "Bearer " + token },
+         success: () => { successCallBack() },
+         error: function (jqXHR) { errorCallBack(jqXHR.status) }
+     });
+ }

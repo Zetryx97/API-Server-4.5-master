@@ -71,7 +71,7 @@
             <div class="headerLayout">
                 <img id="icon-site" src="images/camera.png" alt="" data-toggle="tooltip" class="favicon"
                     title="Gestionnaire d'images">
-                <div id="Logo">
+                <div>
                     <span class="header outLinedText tbg-yellow">
                         P
                     </span>
@@ -103,7 +103,7 @@
                         D
                     </span>
                     <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                
+                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>
                 </div>
                 
                
@@ -243,7 +243,6 @@
         //---NAT---//   
 
         toggleUserConnectionIcon();
-        changeOrderIcon();
 
 
         $("#imageDetailsDlg").dialog({
@@ -310,13 +309,6 @@
                 ));
             }
         }
-
-        function changeOrderIcon(){
-            if(orderBy != "asc")
-                $("#Logo").append($(`<span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>`));
-            else
-            $("#Logo").append($(`<span class="cmd fa fa-arrow-up-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>`));  
-        }
         let imageUsersList = [];
 
         function searchImage() {
@@ -365,7 +357,6 @@
             }
 
         }
-        
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -404,9 +395,9 @@
                 GET_USER_LIST(image.UserId, showUserPicture, error)
                 $("#imagesList").append(
                     $(` 
-                                <div class='imageLayout'>
+                                <div class='imageLayout' ">
                                     <div class='imageHeader' id="${image.Id}">
-                                        <div class="imageTitle" id=${image.Id}>${image.Title} </div>
+                                        <div class="imageTitle" id=${image.Id}>${image.Title}</div>
                                     </div>
                                     
                                         <div    class='image' imageid="${image.Id}" 
@@ -414,12 +405,12 @@
                                                 data-toggle="tooltip"
                                                 style="background-image:url('${image.ThumbnailURL}')">
                                                 <img class="avatar" id="img${image.Id}"></img> 
-                                        </div>                                    
+                                        </div>
+                                    </a>
                                     <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
                                 </div>
                         `)
                 );
-                //<a href="${image.OriginalURL}" target="_blank">
                 if(userConnected!=null && image.UserId == userConnected.UserId)
                 $(`#${image.Id}`).append($(`                    
                                         <div    class="cmd editCmd  fa fa-pencil-square" 
@@ -918,27 +909,30 @@
 
         function editUser(e)
         {
+            let userInfoProfil = JSON.parse(sessionStorage.getItem("user"));
+            let userLogin = JSON.parse(sessionStorage.getItem("access_token"))
             holdCheckETag = true;
             createMode = false;
-            $("#username_input").val(userData.Name);
-            $("#email_input").val(userData.Email);
-            ImageUploader.setImage('avatar', userData.AvatarURL);
+            $("#username_input").val(userInfoProfil.Name);
+            $("#email_input").val(userInfoProfil.Email);
+            ImageUploader.setImage('avatar', userInfoProfil.AvatarURL);
            
             holdCheckETag = true;
-            ImageUploader.imageRequired('image', false);
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");
             $("#confirmCreateAccount").text("Modifier");
             $("#creation-account-form").dialog("option", "buttons",
             [
-                {id:"deleteUser",text: "Désinscrire", click: function() { ShowDeleteUserDlg();}},
+                {id:"deleteUser",text: "Désinscrire", click: function() {$(this).dialog("close"); ShowDeleteUserDlg();}},
                 {id:"modifierUserForm",text:"Modifier", click: function (){ 
                     let user = infoFromEditForm();
                      if(user) 
                      { 
+                        userLogin.Name = $("#username_input").val();
+
                         PUT_USER(user,checkUserConnected,error); 
                         $("#creation-account-form").dialog("close"); 
-                        $("#showUserInfo").text(userConnected.Name);
-                        $("#username_input").val(userConnected.Name);
+                        $("#showUserInfo").text(userLogin.Name);
+                        $("#username_input").val(userLogin.Name);    
                     } 
                 }},
                 {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}
@@ -963,6 +957,11 @@
                 $("#creation-account-form")[0].reportValidity();
             }
             return false;
+        }
+
+        function test()
+        {
+            
         }
 
         $("#editProfilCmd").click((e) =>{
@@ -1125,9 +1124,9 @@
             width: 500,
             minWidth: 500,
             maxWidth: 500,
-            height: 400,
+            height: 250,
             minHeight: 230,
-            maxHeight: 500,
+            maxHeight: 400,
             position: {
                 my: "top",
                 at: "top",
@@ -1139,8 +1138,10 @@
                     id: "deleteAccountUser",
                     text: "Retirer mon compte",
                     click: function () {
-                        
-                    //do shit
+                        let user = JSON.parse(sessionStorage.getItem("user"));
+
+                        DELETE_USER_ACCOUNT(user.Id,LogOutUser,error);
+                    
                     }    
                 },
                 {

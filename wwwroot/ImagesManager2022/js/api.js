@@ -105,7 +105,6 @@ function LOGIN_USER(data, successCallBack, errorCallBack)
         success: (tokenInfo, status, xhr) => {
             window.sessionStorage.setItem("access_token",JSON.stringify(tokenInfo));
             GET_USER(tokenInfo.UserId,successCallBack,errorCallBack);
-            successCallBack(tokenInfo, xhr.getResponseHeader("ETag"));
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
@@ -129,10 +128,10 @@ function GET_USER(userId, successCallBack, errorCallBack)
         url: baseUrl + "/accounts/index/" + userId,
         type: 'GET',
         contentType: 'application/json',
-        success: (data, status, xhr) => 
+        success: (user, status, xhr) => 
         {
-            window.sessionStorage.setItem("user_data",JSON.stringify(data));
-            successCallBack(data);
+            window.sessionStorage.setItem("user",JSON.stringify(user));
+            successCallBack(user);
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
@@ -181,7 +180,7 @@ function PUT_USER(user, successCallBack, errorCallBack) {
         contentType: 'application/json',
         headers: {Authorization: "Bearer " + tokenUser.Access_token },
         data: JSON.stringify(user),
-        success: () => { window.sessionStorage.setItem("user_data",JSON.stringify(user)); },
+        success: () => { window.sessionStorage.setItem("user",JSON.stringify(user)); },
         error: function (jqXHR) { errorCallBack(jqXHR.status) }
     });
 }

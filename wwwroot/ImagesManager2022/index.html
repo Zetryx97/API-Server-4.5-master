@@ -65,6 +65,7 @@
         </form>
     </div>
 
+
     <div class="mainContainer">
         <div class="headerPanel">
             <div class="headerLayout">
@@ -166,6 +167,26 @@
                 </form>
             </div>
 
+            <div id="imageDetailsDlg">
+                <form id="imageForm">
+                    <input type="hidden" id="Id_input" value="0">
+                    <input type="hidden" id="date_input" value="0">
+                    <input type="hidden" id="GUID_input" value="">
+
+                    <label for="title_input">Titre</label>
+                    <input type="text" id="title_input" class="form-control" required>
+
+                    <label for="decription_input">Description</label>
+                    <textarea id="description_input" class="form-control" required></textarea>
+
+                    <label for="image">Image</label>
+                    <div id='image' class='ImageUploader' defaultImage='images/No_Image.png'
+                        waitingImage='images/writing.gif'>
+                    </div>
+                    <div class="note">Cliquez-Déposez une image</div>
+                </form>
+            </div>
+      
             <div id="confirmDeleteDlg">
                 <span id="confirmationMessage"></span>
             </div>
@@ -224,6 +245,56 @@
         toggleUserConnectionIcon();
         changeOrderIcon();
 
+
+        $("#imageDetailsDlg").dialog({
+            title: "...",
+                autoOpen: false,
+                modal: true,
+                show: {
+                    effect: 'fade',
+                    speed: 400
+                },
+                hide: {
+                    effect: 'fade',
+                    speed: 400
+                },
+                width: 640,
+                minWidth: 640,
+                maxWidth: 640,
+                height: 780,
+                minHeight: 780,
+                maxHeight: 780,
+                position: {
+                    my: "top",
+                    at: "top",
+                    of: window
+                },
+                buttons: [{
+                    id: "imageDlgOkBtn",
+                    text: "Title will be changed dynamically",
+                    click: function () {
+                        let image = imageFromForm();
+                        if (image) {
+                            if (createMode) {
+                                POST(image, getImagesList, error);
+                                $(".scrollContainer").scrollTop(0);
+                            } else
+                                PUT(image, getImagesList, error);
+                            resetimageForm();
+                            holdCheckETag = false;
+                            $(this).dialog("close");
+                        }
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        holdCheckETag = false;
+                        $(this).dialog("close");
+                    }
+                }
+                ]
+            });
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
                 $("#ConnectionIcons").append($(
@@ -294,17 +365,7 @@
             }
 
         }
-        function ShowImageDetails(e) {
-            console.log(e)
-            holdCheckETag = true;
-            createMode = false;
-            //GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
-            holdCheckETag = true;
-            ImageUploader.imageRequired('image', false);
-            $("#imageDlg").dialog('option', 'title', "Modification d'image");
-            $("#imageDlgOkBtn").text("Modifier");
-            $("#imageDlg").dialog("open");
-        }
+        
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -348,9 +409,10 @@
                                         <div class="imageTitle" id=${image.Id}>${image.Title} </div>
                                     </div>
                                     
-                                        <div    class='image' 
-                                                style="background-image:url('${image.ThumbnailURL}')"
-                                                onclick="ShowImageDetails(${image.Id})">
+                                        <div    class='image' imageid="${image.Id}" 
+                                                title="Editer ${image.Title}" 
+                                                data-toggle="tooltip"
+                                                style="background-image:url('${image.ThumbnailURL}')">
                                                 <img class="avatar" id="img${image.Id}"></img> 
                                         </div>                                    
                                     <div class="imageDate">${convertToFrenchDate(parseInt(image.Date))}</div>
@@ -397,6 +459,9 @@
             $(".showMore").off();
             $(".editCmd").click(e => {
                 editimage(e)
+            });
+            $(".image").click(e => {
+                observeimage(e)
             });
             $(".deleteCmd").click(e => {
                 deleteimage(e)
@@ -457,17 +522,17 @@
         }
 
         function observeimage(e) {
+            //console.log(e)
             holdCheckETag = true;
             createMode = false;
             GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
             holdCheckETag = true;
             ImageUploader.imageRequired('image', false);
-            $("#imageDlg").dialog('option', 'title', "Modification d'image");
-            $("#imageDlg").dialog('open');
+            $("#imageDetailsDlg").dialog('option', 'title', "Détails de l'image");
+            $("#imageDetailsDlgOkBtn").text("ok");
+            $("#imageDetailsDlg").dialog("open");
         }
-
-
-        
+     
 
         function deleteimage(e) {
             holdCheckETag = true;

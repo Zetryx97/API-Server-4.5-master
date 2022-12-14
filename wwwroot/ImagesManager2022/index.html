@@ -1142,8 +1142,8 @@
                     text: "Retirer mon compte",
                     click: function () {
                         let user = JSON.parse(sessionStorage.getItem("user"));
-
                         DELETE_USER_ACCOUNT(user.Id, LogOutUser, error);
+                        $(this).dialog("close");
 
                     }
                 },

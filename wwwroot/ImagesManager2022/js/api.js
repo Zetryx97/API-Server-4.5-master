@@ -188,13 +188,13 @@ function PUT_USER(user, successCallBack, errorCallBack) {
     });
 }
 function DELETE_USER_ACCOUNT(userId, successCallBack, errorCallBack) {
-    let token = sessionStorage.getItem("access_token");
+    let tokenUser = JSON.parse(window.sessionStorage.getItem("access_token"));
  
      $.ajax({
          url: baseUrl + "/accounts/remove/" + userId,
          type: 'GET',
          contentType: 'application/json',
-         headers : {Authorization: "Bearer " + token },
+         headers : {Authorization: "Bearer " + tokenUser.Access_token },
          success: () => { successCallBack() },
          error: function (jqXHR) { errorCallBack(jqXHR.status) }
      });

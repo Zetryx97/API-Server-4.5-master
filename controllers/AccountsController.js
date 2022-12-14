@@ -135,7 +135,24 @@ module.exports =
                 this.HttpContext.response.unAuthorized();
         }
         // GET:account/remove/id
-        remove(id) { // warning! this is not an API endpoint
+        remove(id) {// warning! this is not an API endpoint
+
+            let imageRepo = new ImagesRepository()
+            let imagesUser = imageRepo.getAll();
+            let imageIndexToDelete = []
+            let indexImage = 0
+
+            for(let image in imagesUser)
+            {
+                if(image.UserId == id)
+                {
+                    imageIndexToDelete.push(indexImage);
+                }
+                indexImage++;
+            }
+
+            imageRepo.removeByIndex(imageIndexToDelete);
+
             super.remove(id);
         }
     }

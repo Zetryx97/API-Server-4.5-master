@@ -892,7 +892,7 @@
                         let codeConfirmation = $("#verifyCodeInput").val();
                         
                         if (codeConfirmation) {
-                            if(userData == null)
+                            if(userData != null)
                             {
                                 VERIFY_USER_SECOND_CHANCE(codeConfirmation,checkUserConnected,error);
                                 $(".scrollContainer").scrollTop(0);
@@ -1087,6 +1087,10 @@
                     $("#verifyUserNotDone").show();
                     console.log("square does appear");
                 }
+                else{
+                    $("#verifyUserNotDone").hide();
+                }
+
                 $("#createAccountCmd").hide()
                 $("#logInCmd").hide();
                 $("#logOutCmd").show();

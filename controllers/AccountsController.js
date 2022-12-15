@@ -136,13 +136,12 @@ module.exports =
         }
         // GET:account/remove/id
         remove(id) {// warning! this is not an API endpoint
-
             let imageRepo = new ImagesRepository()
             let imagesUser = imageRepo.getAll();
             let imageIndexToDelete = []
             let indexImage = 0
 
-            for(let image in imagesUser)
+            for(let image of imagesUser)
             {
                 if(image.UserId == id)
                 {

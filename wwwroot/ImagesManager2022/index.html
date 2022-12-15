@@ -245,8 +245,8 @@
         toggleUserConnectionIcon();
 
 
-        $("#imageDetailsDlg").dialog({
-            title: "...",
+        $("#imageDetailsDlg").dialog({        
+                title: "...",
                 autoOpen: false,
                 modal: true,
                 show: {
@@ -269,7 +269,7 @@
                     of: window
                 },
                 buttons: [{
-                    id: "imageDlgOkBtn",
+                    id: "imageDetailsDlgOkBtn",
                     text: "Title will be changed dynamically",
                     click: function () {
                         let image = imageFromForm();
@@ -513,7 +513,7 @@
         }
 
         function observeimage(e) {
-            //console.log(e)
+            console.log(e)
             holdCheckETag = true;
             createMode = false;
             GET_ID(e.target.getAttribute("imageid"), imageToForm, error);

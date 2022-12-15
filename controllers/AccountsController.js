@@ -26,13 +26,9 @@ module.exports =
             let user = this.repository.findByField("Email", loginInfo.Email);
             if (user != null) {
                 if (user.Password == loginInfo.Password) {
-                    if (user.VerifyCode == 'verified') {
-                        let newToken = TokenManager.create(user);
-                        this.HttpContext.response.JSON(newToken);
-                        console.log(newToken);
-                    } else {
-                        this.HttpContext.response.unverifiedUser();
-                    }
+                    let newToken = TokenManager.create(user);
+                    this.HttpContext.response.JSON(newToken);
+                    console.log(newToken);
                 } else {
                     this.HttpContext.response.wrongPassword();
                 }

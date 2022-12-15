@@ -890,11 +890,21 @@
                     text: "Valider",
                     click: function () {
                         let codeConfirmation = $("#verifyCodeInput").val();
+                        
                         if (codeConfirmation) {
-                            $(this).dialog("close");
-                            VERIFY_USER(codeConfirmation, getImagesList, error);
-                            $(".scrollContainer").scrollTop(0);
-                            isSignedIn = true;
+                            if(userData == null)
+                            {
+                                VERIFY_USER_SECOND_CHANCE(codeConfirmation,checkUserConnected,error);
+                                $(".scrollContainer").scrollTop(0);
+                                isSignedIn = true;
+                            }
+                            else{
+                                $(this).dialog("close");
+                                VERIFY_USER(codeConfirmation, getImagesList, error);
+                                $(".scrollContainer").scrollTop(0);
+                                isSignedIn = true;
+                            }
+                            
                         }
 
                     }
@@ -1096,6 +1106,7 @@
             $("#editProfilCmd").hide();
             $("#showUserInfo").text("");
             $("#avatarUserConnected").hide();
+            $("#verifyUserNotDone").hide();
 
         }
 

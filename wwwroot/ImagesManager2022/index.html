@@ -102,14 +102,20 @@
                     <span class="header outLinedText tbg-yellow">
                         D
                     </span>
-                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" data-toggle="tooltip"></span>
-                <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant" title="Trier les images en ordre décroissant" data-toggle="tooltip" onclick="changeOrder()"></span>
+                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" 
+                    data-toggle="tooltip"></span> 
+
+                    <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant"
+                        title="Trier les images en ordre décroissant" data-toggle="tooltip"
+                        onclick="changeOrder()"></span>
                 </div>
-                
-               
+
+
             </div>
             <div class="svg-wrapper">
+
                 
+                <span title="Vérfier mon compte" data-toggle="tooltip" id="verifyUserNotDone" class="cmd fa fa-square-check"></span>
                 <img src="" class="avatar" id="avatarUserConnected">
                 <span id="showUserInfo"></span>
 
@@ -168,7 +174,7 @@
             </div>
 
             <div id="imageDetailsDlg">
-                <form id="imageForm">
+                <!--<form id="imageForm">
                     <input type="hidden" id="Id_input" value="0">
                     <input type="hidden" id="date_input" value="0">
                     <input type="hidden" id="GUID_input" value="">
@@ -184,9 +190,9 @@
                         waitingImage='images/writing.gif'>
                     </div>
                     <div class="note">Cliquez-Déposez une image</div>
-                </form>
+                </form>-->
             </div>
-      
+
             <div id="confirmDeleteDlg">
                 <span id="confirmationMessage"></span>
             </div>
@@ -222,17 +228,23 @@
         let imgUserId = sessionStorage.getItem('imgUserId');
         let imgMotsCles = sessionStorage.getItem('imgMotsCles');
         let UserArray = [];
-        let userConnected = JSON.parse(sessionStorage.getItem("access_token"));  
+        let userConnected = JSON.parse(sessionStorage.getItem("access_token"));
         let userData = JSON.parse(sessionStorage.getItem("user"));
         let orderBy = sessionStorage.getItem("orderBy");
 
-       
+
 
 
         //window.localStorage.clear();
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
+        $("#verifyUserNotDone").hide();
+        if(userData != null)
+        {
+            checkUserConnected(userData);
+        }
+        
         init_UI();
         HEAD(checkETag, error);
         setInterval(() => {
@@ -292,8 +304,9 @@
                         $(this).dialog("close");
                     }
                 }
-                ]
-            });
+            ]
+        });
+
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
                 $("#ConnectionIcons").append($(
@@ -317,34 +330,32 @@
             location.reload();
         }
 
-        function changeOrder(){
-            if(orderBy != "asc")
+        function changeOrder() {
+            if (orderBy != "asc")
                 sessionStorage.setItem("orderBy", "asc")
             else
-                sessionStorage.setItem("orderBy", "desc")             
+                sessionStorage.setItem("orderBy", "desc")
             location.reload();
         }
 
-        
+
 
         function initFilterList(images, ETag) {
             images.forEach(image => {
                 if (image.UserId != null) {
                     if (!imageUsersList.includes(image.UserId)) {
-                        if(userData != null && image.UserId == userData.Id)
-                        {
+                        if (userData != null && image.UserId == userData.Id) {
                             $("#filterList").append($(
-                            `<option value="` + image.UserId + `">Mes images</option>`
+                                `<option value="` + image.UserId + `">Mes images</option>`
                             ));
-                        }
-                        else
-                        {
-                            GET_USER_LIST(image.UserId, addUserToFilters, error)               
+                        } else {
+                            GET_USER_LIST(image.UserId, addUserToFilters, error)
                         }
                         imageUsersList.push(image.UserId);
                     }
                 }
             });
+
             function addUserToFilters(user, ETag) {
                 if (user != null) {
                     if (!UserArray.includes(user)) {
@@ -352,7 +363,7 @@
                     }
                     $("#filterList").append($(
                         `<option value="` + user.Id + `">` + user.Name + `</option>`
-                    ));            
+                    ));
                 }
             }
 
@@ -369,28 +380,31 @@
 
         function getImagesList(refresh = true) {
             appendMode = !refresh;
+
             function prepareQueryString() {
                 //let keywords = "Caribou"; 
                 if (appendMode) {
-                    queryString = `?sort=Date,${orderBy}&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` + imgUserId;
+                    queryString =
+                        `?sort=Date,${orderBy}&offset=${Math.trunc(imagesCount / appendCount)}&limit=${appendCount}&UserId=` +
+                        imgUserId;
                     imagesCount += appendCount;
                 } else {
                     queryString = `?sort=Date,${orderBy}&offset=${0}&limit=${imagesCount}&UserId=` + imgUserId;
                 }
-                if(imgMotsCles != null){
-                    queryString+="&keywords="+ imgMotsCles;
+                if (imgMotsCles != null) {
+                    queryString += "&keywords=" + imgMotsCles;
                 }
 
                 return queryString;
             }
-            GET_ALL(initFilterList,error)
-            GET_ALL(refreshimagesList,error,prepareQueryString())
+            GET_ALL(initFilterList, error)
+            GET_ALL(refreshimagesList, error, prepareQueryString())
         }
-
 
         function refreshimagesList(images, ETag) {
             document.getElementById("imageSearchBar").value = imgMotsCles;
             $('#filterList').val(imgUserId);
+
             function insertIntoImageList(image) {
                 GET_USER_LIST(image.UserId, showUserPicture, error)
                 $("#imagesList").append(
@@ -411,8 +425,8 @@
                                 </div>
                         `)
                 );
-                if(userConnected!=null && image.UserId == userConnected.UserId)
-                $(`#${image.Id}`).append($(`                    
+                if (userConnected != null && image.UserId == userConnected.UserId)
+                    $(`#${image.Id}`).append($(`                    
                                         <div    class="cmd editCmd  fa fa-pencil-square" 
                                                 imageid="${image.Id}" 
                                                 title="Editer ${image.Title}" 
@@ -424,11 +438,11 @@
                                                 data-toggle="tooltip">
                                         </div>
                 `));
+
                 function showUserPicture(user, ETag) {
                     if (user.AvatarURL == "") {
                         $(`#img${image.Id}`).attr("src", "images/No_Avatar.png");
-                    }
-                    else {
+                    } else {
                         $(`#img${image.Id}`).attr("src", user.AvatarURL);
                     }
                 }
@@ -523,7 +537,7 @@
             $("#imageDetailsDlgOkBtn").text("ok");
             $("#imageDetailsDlg").dialog("open");
         }
-     
+
 
         function deleteimage(e) {
             holdCheckETag = true;
@@ -581,13 +595,11 @@
 
         function init_UI() {
             $("#newImageCmd").click(newImage);
-            if(window.localStorage.length <= 0)
-            {
+            if (window.localStorage.length <= 0) {
                 $("#email-login").val("");
                 $("#pwd-login").val("");
                 document.getElementById("checked-user").checked = false;
-            }
-            else{
+            } else {
                 $("#email-login").val(window.localStorage.getItem("email_login"));
                 $("#pwd-login").val(window.localStorage.getItem("pwd_login"));
                 document.getElementById("checked-user").checked = true;
@@ -617,29 +629,29 @@
                     of: window
                 },
                 buttons: [{
-                    id: "imageDlgOkBtn",
-                    text: "Title will be changed dynamically",
-                    click: function () {
-                        let image = imageFromForm();
-                        if (image) {
-                            if (createMode) {
-                                POST(image, getImagesList, error);
-                                $(".scrollContainer").scrollTop(0);
-                            } else
-                                PUT(image, getImagesList, error);
-                            resetimageForm();
+                        id: "imageDlgOkBtn",
+                        text: "Title will be changed dynamically",
+                        click: function () {
+                            let image = imageFromForm();
+                            if (image) {
+                                if (createMode) {
+                                    POST(image, getImagesList, error);
+                                    $(".scrollContainer").scrollTop(0);
+                                } else
+                                    PUT(image, getImagesList, error);
+                                resetimageForm();
+                                holdCheckETag = false;
+                                $(this).dialog("close");
+                            }
+                        }
+                    },
+                    {
+                        text: "Annuler",
+                        click: function () {
                             holdCheckETag = false;
                             $(this).dialog("close");
                         }
                     }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
-                        holdCheckETag = false;
-                        $(this).dialog("close");
-                    }
-                }
                 ]
             });
 
@@ -667,24 +679,24 @@
                     of: window
                 },
                 buttons: [{
-                    id: "confirmDeleteDlgOkBtn",
-                    text: "Oui",
-                    click: function () {
-                        holdCheckETag = false;
-                        if (imageIdToDelete)
-                            DELETE(imageIdToDelete, getImagesList, error);
-                        imageIdToDelete = 0;
-                        $(this).dialog("close");
+                        id: "confirmDeleteDlgOkBtn",
+                        text: "Oui",
+                        click: function () {
+                            holdCheckETag = false;
+                            if (imageIdToDelete)
+                                DELETE(imageIdToDelete, getImagesList, error);
+                            imageIdToDelete = 0;
+                            $(this).dialog("close");
+                        }
+                    },
+                    {
+                        text: "Annuler",
+                        click: function () {
+                            holdCheckETag = false;
+                            imageIdToDelete = 0;
+                            $(this).dialog("close");
+                        }
                     }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
-                        holdCheckETag = false;
-                        imageIdToDelete = 0;
-                        $(this).dialog("close");
-                    }
-                }
                 ]
             });
 
@@ -797,24 +809,24 @@
                 of: window
             },
             buttons: [{
-                id: "confirmCreateAccount",
-                text: "Confirmer",
-                click: function () {
-                    let newUser = registerUserFromForm();
-                    if (newUser) {
-                        $(this).dialog("close");
-                        ShowVerfiedCodeDialog();
-                        CREATE_USER(newUser, getImagesList, error);
+                    id: "confirmCreateAccount",
+                    text: "Confirmer",
+                    click: function () {
+                        let newUser = registerUserFromForm();
+                        if (newUser) {
+                            $(this).dialog("close");
+                            ShowVerfiedCodeDialog();
+                            CREATE_USER(newUser, getImagesList, error);
+                        }
+                        resetInfoCreationForm();
                     }
-                    resetInfoCreationForm();
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
                 }
-            },
-            {
-                text: "Annuler",
-                click: function () {
-                    $(this).dialog("close");
-                }
-            }
             ]
         });
 
@@ -875,24 +887,34 @@
                 of: window
             },
             buttons: [{
-                text: "Valider",
-                click: function () {
-                    let codeConfirmation = $("#verifyCodeInput").val();
-                    if (codeConfirmation) {
-                        $(this).dialog("close");
-                        VERIFY_USER(codeConfirmation, getImagesList, error);
-                        $(".scrollContainer").scrollTop(0);
-                        isSignedIn = true;
-                    }
+                    text: "Valider",
+                    click: function () {
+                        let codeConfirmation = $("#verifyCodeInput").val();
+                        
+                        if (codeConfirmation) {
+                            if(userData != null)
+                            {
+                                VERIFY_USER_SECOND_CHANCE(codeConfirmation,checkUserConnected,error);
+                                $(".scrollContainer").scrollTop(0);
+                                isSignedIn = true;
+                            }
+                            else{
+                                $(this).dialog("close");
+                                VERIFY_USER(codeConfirmation, getImagesList, error);
+                                $(".scrollContainer").scrollTop(0);
+                                isSignedIn = true;
+                            }
+                            
+                        }
 
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
                 }
-            },
-            {
-                text: "Annuler",
-                click: function () {
-                    $(this).dialog("close");
-                }
-            }
             ]
         });
 
@@ -901,14 +923,13 @@
         }
 
         function userInfoToForm(user) { //for edit user
-           $("#Id_User").val(user.Id);
-           $("#AvatarGUID_input").val(user.AvatarGUID);
-           $("#username_input").val(user.Name);
-           $("#email_input").val(user.Email);
+            $("#Id_User").val(user.Id);
+            $("#AvatarGUID_input").val(user.AvatarGUID);
+            $("#username_input").val(user.Name);
+            $("#email_input").val(user.Email);
         }
 
-        function editUser(e)
-        {
+        function editUser(e) {
             let userInfoProfil = JSON.parse(sessionStorage.getItem("user"));
             let userLogin = JSON.parse(sessionStorage.getItem("access_token"))
             holdCheckETag = true;
@@ -916,32 +937,48 @@
             $("#username_input").val(userInfoProfil.Name);
             $("#email_input").val(userInfoProfil.Email);
             ImageUploader.setImage('avatar', userInfoProfil.AvatarURL);
-           
+
             holdCheckETag = true;
             $("#creation-account-form").dialog('option', 'title', "Modification de profil");
             $("#confirmCreateAccount").text("Modifier");
             $("#creation-account-form").dialog("option", "buttons",
-            [
-                {id:"deleteUser",text: "Désinscrire", click: function() {$(this).dialog("close"); ShowDeleteUserDlg();}},
-                {id:"modifierUserForm",text:"Modifier", click: function (){ 
-                    let user = infoFromEditForm();
-                     if(user) 
-                     { 
-                        userLogin.Name = $("#username_input").val();
+                [{
+                        id: "deleteUser",
+                        text: "Désinscrire",
+                        click: function () {
+                            $(this).dialog("close");
+                            ShowDeleteUserDlg();
+                        }
+                    },
+                    {
+                        id: "modifierUserForm",
+                        text: "Modifier",
+                        click: function () {
+                            let user = infoFromEditForm();
+                            if (user) {
+                                userLogin.Name = $("#username_input").val();
 
-                        PUT_USER(user,checkUserConnected,error); 
-                        $("#creation-account-form").dialog("close"); 
-                        $("#showUserInfo").text(userLogin.Name);
-                        $("#username_input").val(userLogin.Name);    
-                    } 
-                }},
-                {id:"cancelBtn",text:"Annuler", click: function (){ $("#creation-account-form").dialog("close"); resetInfoCreationForm();}}
-            ]);
+                                PUT_USER(user, checkUserConnected, error);
+                                $("#creation-account-form").dialog("close");
+                                $("#showUserInfo").text(userLogin.Name);
+                                $("#username_input").val(userLogin.Name);
+                            }
+                        }
+                    },
+                    {
+                        id: "cancelBtn",
+                        text: "Annuler",
+                        click: function () {
+                            $("#creation-account-form").dialog("close");
+                            resetInfoCreationForm();
+                        }
+                    }
+                ]);
             $("#creation-account-form").dialog('open');
         }
-        function infoFromEditForm()
-        {
-            let userInfo  = JSON.parse(window.sessionStorage.getItem("user"));
+
+        function infoFromEditForm() {
+            let userInfo = JSON.parse(window.sessionStorage.getItem("user"));
             if ($("#creation-account-form")[0].checkValidity()) {
                 let user = {
                     Id: userInfo.Id,
@@ -959,32 +996,29 @@
             return false;
         }
 
-        $("#editProfilCmd").click((e) =>{
+        $("#editProfilCmd").click((e) => {
             editUser(e);
         });
 
-        function resetInfoLoginUser(){
-                $("#email-login").val(null);
-                $("#pwd-login").val(null);
-                document.getElementById("checked-user").checked = false;
-            
+        function resetInfoLoginUser() {
+            $("#email-login").val(null);
+            $("#pwd-login").val(null);
+            document.getElementById("checked-user").checked = false;
+
         }
 
-        function rememberUserConnected()
-        {
+        function rememberUserConnected() {
             let isChecked = false;
-            if(document.getElementById("checked-user").checked)
-            {
+            if (document.getElementById("checked-user").checked) {
                 isChecked = true;
                 window.localStorage.setItem("email_login", $("#email-login").val());
                 window.localStorage.setItem("pwd_login", $("#pwd-login").val());
-                window.localStorage.setItem("isChecked",isChecked);
+                window.localStorage.setItem("isChecked", isChecked);
 
                 $("#email-login").val(window.localStorage.getItem("email_login"));
                 $("#pwd-login").val(window.localStorage.getItem("pwd_login"));
                 $("#checked-user").val(window.localStorage.getItem("isChecked"));
-            }
-            else{
+            } else {
                 isChecked = false;
                 window.localStorage.clear();
                 document.getElementById("checked-user").checked = false;
@@ -1020,42 +1054,43 @@
                     text: "Confirmer",
                     click: function () {
                         let user_info = connexionFromForm();
-                        
                         if (user_info) {
-                            if (createMode) {
-                                $(this).dialog("close");
-                                LOGIN_USER(user_info, checkUserConnected, error);
-                                if(window.localStorage != null)
-                                {
-                                    rememberUserConnected();
-                                }
+                            $(this).dialog("close");
+                            LOGIN_USER(user_info, checkUserConnected, error);
+                            if (window.localStorage != null) {
+                                rememberUserConnected();
                             }
                         }
-
-                    }    
-            },
-            {
-                text: "Annuler",
-                click: function () {
-                    $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Annuler",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
                 }
-            }
             ]
         });
 
+        $("#verifyUserNotDone").click(ShowVerfiedCodeDialog);
         function checkUserConnected(userData) {
-            if(userData != null)
-            {
+            if (userData != null) {
 
-                if(userData.AvatarURL == "" || userData.AvatarURL == null)
-                {
+                if (userData.AvatarURL == "" || userData.AvatarURL == null) {
                     $("#avatarUserConnected").attr("src", "images/No_Avatar.png");
+                } else {
+                    $("#avatarUserConnected").attr("src", userData.AvatarURL);
                 }
-                else
+
+                if(userData.VerifyCode != "verified")
                 {
-                    $("#avatarUserConnected").attr("src",userData.AvatarURL);
+                    $("#verifyUserNotDone").show();
+                    console.log("square does appear");
                 }
-            
+                else{
+                    $("#verifyUserNotDone").hide();
+                }
+
                 $("#createAccountCmd").hide()
                 $("#logInCmd").hide();
                 $("#logOutCmd").show();
@@ -1066,8 +1101,7 @@
 
         }
 
-        function LogOutUser()
-        {
+        function LogOutUser() {
             window.sessionStorage.removeItem("access_token");
             window.sessionStorage.removeItem("user");
             $("#createAccountCmd").show();
@@ -1076,6 +1110,7 @@
             $("#editProfilCmd").hide();
             $("#showUserInfo").text("");
             $("#avatarUserConnected").hide();
+            $("#verifyUserNotDone").hide();
 
         }
 
@@ -1127,34 +1162,31 @@
                 at: "top",
                 of: window
             },
-            buttons: 
-            [
-                {
+            buttons: [{
                     id: "deleteAccountUser",
                     text: "Retirer mon compte",
                     click: function () {
                         let user = JSON.parse(sessionStorage.getItem("user"));
+                        DELETE_USER_ACCOUNT(user.Id, LogOutUser, error);
+                        $(this).dialog("close");
+                        window.location.reload();
 
-                        DELETE_USER_ACCOUNT(user.Id,LogOutUser,error);
-                    
-                    }    
+                    }
                 },
                 {
-                    text:"Annuler",
-                    click: function ()
-                    {
+                    text: "Annuler",
+                    click: function () {
                         $(this).dialog("close");
                     }
                 }
             ]
         });
 
-        function ShowDeleteUserDlg()
-        {
+        function ShowDeleteUserDlg() {
             $("#deleteUserDialog").dialog("open");
         }
 
-        
+
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     </script>

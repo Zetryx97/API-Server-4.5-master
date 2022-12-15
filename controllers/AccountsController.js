@@ -26,13 +26,9 @@ module.exports =
             let user = this.repository.findByField("Email", loginInfo.Email);
             if (user != null) {
                 if (user.Password == loginInfo.Password) {
-                    if (user.VerifyCode == 'verified') {
-                        let newToken = TokenManager.create(user);
-                        this.HttpContext.response.JSON(newToken);
-                        console.log(newToken);
-                    } else {
-                        this.HttpContext.response.unverifiedUser();
-                    }
+                    let newToken = TokenManager.create(user);
+                    this.HttpContext.response.JSON(newToken);
+                    console.log(newToken);
                 } else {
                     this.HttpContext.response.wrongPassword();
                 }
@@ -135,7 +131,23 @@ module.exports =
                 this.HttpContext.response.unAuthorized();
         }
         // GET:account/remove/id
-        remove(id) { // warning! this is not an API endpoint
+        remove(id) {// warning! this is not an API endpoint
+            let imageRepo = new ImagesRepository()
+            let imagesUser = imageRepo.getAll();
+            let imageIndexToDelete = []
+            let indexImage = 0
+
+            for(let image of imagesUser)
+            {
+                if(image.UserId == id)
+                {
+                    imageIndexToDelete.push(indexImage);
+                }
+                indexImage++;
+            }
+
+            imageRepo.removeByIndex(imageIndexToDelete);
+
             super.remove(id);
         }
     }

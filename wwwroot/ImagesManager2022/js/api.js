@@ -121,6 +121,19 @@ function VERIFY_USER(code, successCallBack, errorCallBack)
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }
+function VERIFY_USER_SECOND_CHANCE(code, successCallBack,errorCallBack)
+{
+    let idUser = JSON.parse(sessionStorage.getItem("user"));
+    
+    $.ajax({
+        url: baseUrl + "/accounts/verify?id=" + idUser.Id +"&code=" + code,
+        type: 'GET',
+        contentType: 'application/json',
+        data: JSON.stringify(code),
+        success: (data, status, xhr) => {  successCallBack(data) },
+        error: function (jqXHR) { errorCallBack(jqXHR.status) } 
+    });
+}
 
 function GET_USER(userId, successCallBack, errorCallBack)
 {
@@ -188,13 +201,13 @@ function PUT_USER(user, successCallBack, errorCallBack) {
     });
 }
 function DELETE_USER_ACCOUNT(userId, successCallBack, errorCallBack) {
-    let token = sessionStorage.getItem("access_token");
+    let tokenUser = JSON.parse(window.sessionStorage.getItem("access_token"));
  
      $.ajax({
          url: baseUrl + "/accounts/remove/" + userId,
          type: 'GET',
          contentType: 'application/json',
-         headers : {Authorization: "Bearer " + token },
+         headers : {Authorization: "Bearer " + tokenUser.Access_token },
          success: () => { successCallBack() },
          error: function (jqXHR) { errorCallBack(jqXHR.status) }
      });

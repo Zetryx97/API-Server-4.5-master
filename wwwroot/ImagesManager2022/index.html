@@ -19,7 +19,7 @@
 
 <body>
 
-    <div id="message-about">Une création de Gabriel Lessard et Nathanael Kolodenchuk.
+    <div id="message-about">Une création de Gabriel Lessard et Nathanaël Kolodenchuck.
         Session Automne 2022 - Collège Lionel-Groulx
     </div>
 
@@ -245,6 +245,7 @@
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
         $("#verifyUserNotDone").hide();
+        $('#newImageCmd').hide();
         if(userData != null)
         {
             checkUserConnected(userData);
@@ -260,7 +261,6 @@
         //---NAT---//   
 
         toggleUserConnectionIcon();
-        $('#newImageCmd').hide();
             
 
         function imageToDetails(image) {    
@@ -1070,10 +1070,10 @@
                         let user_info = connexionFromForm();
                         if (user_info) {
                             $(this).dialog("close");
-                            LOGIN_USER(user_info, checkUserConnected, error);
+                            LOGIN_USER(user_info, checkUserConnected, error);   
                             if (window.localStorage != null) {
                                 rememberUserConnected();
-                            }
+                            }                       
                         }
                     }
                 },
@@ -1112,8 +1112,8 @@
                 $("#showUserInfo").text(userData.Name);
                 $("#avatarUserConnected").show();
                 $('#newImageCmd').show();
+                
             }
-
         }
 
         function LogOutUser() {

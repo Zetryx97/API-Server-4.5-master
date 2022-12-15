@@ -104,7 +104,7 @@ function LOGIN_USER(data, successCallBack, errorCallBack)
         data: JSON.stringify(data),
         success: (tokenInfo, status, xhr) => {
             window.sessionStorage.setItem("access_token",JSON.stringify(tokenInfo));
-            GET_USER(tokenInfo.UserId,successCallBack,errorCallBack);
+            GET_USER(tokenInfo.UserId,successCallBack,errorCallBack);           
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
@@ -144,6 +144,7 @@ function GET_USER(userId, successCallBack, errorCallBack)
         success: (user, status, xhr) => 
         {
             window.sessionStorage.setItem("user",JSON.stringify(user));
+            
             successCallBack(user);
         },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 

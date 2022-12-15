@@ -130,7 +130,7 @@ function VERIFY_USER_SECOND_CHANCE(code, successCallBack,errorCallBack)
         type: 'GET',
         contentType: 'application/json',
         data: JSON.stringify(code),
-        success: (data, status, xhr) => {  successCallBack(data, xhr.getResponseHeader("ETag")) },
+        success: (data, status, xhr) => {  successCallBack(data) },
         error: function (jqXHR) { errorCallBack(jqXHR.status) } 
     });
 }

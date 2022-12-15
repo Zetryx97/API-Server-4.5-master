@@ -58,7 +58,7 @@ module.exports =
             return null;
         }
         add(image) {
-            if (this.model.valid(image)) {
+            if (this.model.valid(image)) {       
                 image["GUID"] = ImageFilesRepository.storeImageData("", image["ImageData"]);
                 delete image["ImageData"];
                 return this.bindImageURL(super.add(image));

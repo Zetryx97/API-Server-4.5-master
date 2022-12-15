@@ -8,6 +8,14 @@
     "UserId": 1
   },
   {
+    "Id": 3,
+    "GUID": "bd8d58e0-50a0-11ed-a99e-5982fcaa3018",
+    "Title": "Québec conteste",
+    "Description": "Québec conteste devant la Cour supérieure la décision du Tribunal administratif du travail qui avait donné raison aux syndicats dans la santé concernant des primes liées à la COVID-19 dont les paramètres n'avaient pas été négociés.",
+    "Date": 1666293818545,
+    "UserId": 1
+  },
+  {
     "Id": 4,
     "GUID": "0343fb50-50ab-11ed-ab48-f1e29f11e662",
     "Title": "Feuilles d'autome 2019",
@@ -28,7 +36,7 @@
     "GUID": "462171a0-50ab-11ed-ab48-f1e29f11e662",
     "Title": "Specialized Roubaix 2017",
     "Description": "Vélo de route avec suspension au guidon",
-    "Date": "1666293800927",
+    "Date": 1666293800927,
     "UserId": 1
   },
   {
@@ -112,12 +120,28 @@
     "UserId": 2
   },
   {
+    "Id": 17,
+    "GUID": "eea78470-50b2-11ed-ae75-af0cce0ebc70",
+    "Title": "In Men’s Figure Skating, the Glitzy Costumes Are Built to Win",
+    "Description": "Style plays a crucial role in the world of skating, perhaps more than any other sport at the Winter Olympics. “Costumes are an important part of skating and can oftentimes express what the movement and choreography can’t,” says Chen, who is one of three American male figure skaters who will compete at the Olympics in Beijing this week, along with Vincent Zhou and Jason Brown. Brown adds, “You’re always playing a different character. What we’re wearing, and how we present ourselves, makes for the total package—and it makes a lasting impact on the audience and the judges.”",
+    "Date": "1666296427876",
+    "UserId": 2
+  },
+  {
     "Id": 18,
     "GUID": "805a8390-50bd-11ed-aa21-ef4201764856",
     "Title": "Ian Photos: Flooded Homes, Washed-Out Roads, Broken Power Poles",
     "Description": "As Hurricane Ian pushes up the US East Coast, the first glimpses of the storm’s catastrophic strike on southwestern Florida are starting to come into view. A row of beachfront houses destroyed. An apartment floor covered in water and dirt. A utility pole snapped in half. A washed-out highway. Boats littering the sidewalk.\n\nOfficials warn that it will take days, if not longer, to assess the full magnitude of damage left behind. That's especially true in places inland with heavy rainfall, where water is less likely to quickly recede, making them difficult to reach. Even a preliminary scan of impacts along the coast, which experienced the brunt of Ian’s storm surge and Category 4 winds, reveals the storm to be a climate disaster.",
     "Date": "1666300972910",
     "UserId": 2
+  },
+  {
+    "Id": 19,
+    "GUID": "a3560cc0-50bd-11ed-aa21-ef4201764856",
+    "Title": "Three Ways to Build Back Smarter After Hurricane Ian",
+    "Description": "The damage from Hurricane Ian will very likely run into the tens of billions of dollars and scientists say the United States can expect more severe storms like it as the planet heats up. They also say the risks of increasingly wild weather make it all the more urgent that cities and states take steps to protect people and property.\n\nOne of the ways to do that is to heed lessons and rebuild wisely after big storms. In some cases, for example, it might not make sense to replace homes on low-lying land, over and over again, in areas vulnerable to storm surge.",
+    "Date": "1666301077148",
+    "UserId": 4
   },
   {
     "Id": 20,

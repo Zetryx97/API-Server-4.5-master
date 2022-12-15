@@ -169,28 +169,33 @@
                     <div id='image' class='ImageUploader' defaultImage='images/No_Image.png'
                         waitingImage='images/writing.gif'>
                     </div>
+
                     <div class="note">Cliquez-Déposez une image</div>
                 </form>
             </div>
 
             <div id="imageDetailsDlg">
-                <!--<form id="imageForm">
-                    <input type="hidden" id="Id_input" value="0">
-                    <input type="hidden" id="date_input" value="0">
-                    <input type="hidden" id="GUID_input" value="">
+                <form id="imageDetails">
+                    <label for="ImgDetailsTitle">Titre</label>
+                    <p id="ImgDetailsTitle"></p>
 
-                    <label for="title_input">Titre</label>
-                    <input type="text" id="title_input" class="form-control" required>
+                    <label for="ImgDetailsDescription">Description</label>
+                    <p id="ImgDetailsDescription"></p>
 
-                    <label for="decription_input">Description</label>
-                    <textarea id="description_input" class="form-control" required></textarea>
+                    <label for="ImgDetailsImage">Image</label>
+                    <div>
+                        <a id ="ImgDetailsLink" target="_blank" href="">
+                            <img id ="ImgDetailsImage" src="" alt="image" width="500"/>
+                        </a> 
+                    </div>            
 
-                    <label for="image">Image</label>
-                    <div id='image' class='ImageUploader' defaultImage='images/No_Image.png'
-                        waitingImage='images/writing.gif'>
-                    </div>
-                    <div class="note">Cliquez-Déposez une image</div>
-                </form>-->
+                    <label for="ImgDetailsDate">Date de création</label>
+                    <p id="ImgDetailsDate"></p>
+
+                    <label for="ImgDetailsCreator">Créateur de l'image</label>
+                    <p id="ImgDetailsCreator"></p>
+
+                </form>
             </div>
 
             <div id="confirmDeleteDlg">
@@ -256,6 +261,25 @@
 
         toggleUserConnectionIcon();
 
+        function imageToDetails(image) {    
+            $("#ImgDetailsTitle").empty().append(image.Title);
+            $("#ImgDetailsDescription").empty().append(image.Description);
+            $("#ImgDetailsLink").attr("href", image.OriginalURL)
+            $("#ImgDetailsImage").attr("src", image.OriginalURL)
+            $("#ImgDetailsDate").empty().append(convertToFrenchDate(parseInt(image.Date)));
+            
+            GET_USER_LIST(image.UserId, showCreatorDetails, error)
+            
+            function showCreatorDetails(user, ETag) {
+                console.log(user);
+                if (user.AvatarURL == "") {
+                        $("#ImgDetailsCreator").empty().append(`<img class="avatar"src="images/No_Avatar.png"> ${user.Name}`);
+                    } else {                                   
+                        $("#ImgDetailsCreator").empty().append(`<img class="avatar"src="${user.AvatarURL}"> ${user.Name}`);
+                    }
+                
+                }
+        }
 
         $("#imageDetailsDlg").dialog({        
                 title: "...",
@@ -279,33 +303,17 @@
                     my: "top",
                     at: "top",
                     of: window
-                },
-                buttons: [{
-                    id: "imageDetailsDlgOkBtn",
-                    text: "Title will be changed dynamically",
-                    click: function () {
-                        let image = imageFromForm();
-                        if (image) {
-                            if (createMode) {
-                                POST(image, getImagesList, error);
-                                $(".scrollContainer").scrollTop(0);
-                            } else
-                                PUT(image, getImagesList, error);
-                            resetimageForm();
+                },         
+                buttons: [
+                    {
+                        text: "Fermer",
+                        click: function () {
                             holdCheckETag = false;
                             $(this).dialog("close");
                         }
                     }
-                },
-                {
-                    text: "Annuler",
-                    click: function () {
-                        holdCheckETag = false;
-                        $(this).dialog("close");
-                    }
-                }
-            ]
-        });
+                ]
+            });      
 
         function toggleUserConnectionIcon() {
             if (!isSignedIn) {
@@ -414,8 +422,9 @@
                                         <div class="imageTitle" id=${image.Id}>${image.Title}</div>
                                     </div>
                                     
-                                        <div    class='image' imageid="${image.Id}" 
-                                                title="Editer ${image.Title}" 
+                                        <div    class='image' 
+                                                imageid="${image.Id}" 
+                                                title="Observer ${image.Title}" 
                                                 data-toggle="tooltip"
                                                 style="background-image:url('${image.ThumbnailURL}')">
                                                 <img class="avatar" id="img${image.Id}"></img> 
@@ -442,7 +451,7 @@
                 function showUserPicture(user, ETag) {
                     if (user.AvatarURL == "") {
                         $(`#img${image.Id}`).attr("src", "images/No_Avatar.png");
-                    } else {
+                    } else {                                   
                         $(`#img${image.Id}`).attr("src", user.AvatarURL);
                     }
                 }
@@ -530,11 +539,10 @@
             console.log(e)
             holdCheckETag = true;
             createMode = false;
-            GET_ID(e.target.getAttribute("imageid"), imageToForm, error);
+            GET_ID(e.target.getAttribute("imageid"), imageToDetails, error);
             holdCheckETag = true;
             ImageUploader.imageRequired('image', false);
             $("#imageDetailsDlg").dialog('option', 'title', "Détails de l'image");
-            $("#imageDetailsDlgOkBtn").text("ok");
             $("#imageDetailsDlg").dialog("open");
         }
 
@@ -583,6 +591,7 @@
         }
 
         function imageToForm(image) {
+            
             $("#Id_input").val(image.Id);
             $("#GUID_input").val(image.GUID);
             $("#date_input").val(image.Date);
@@ -591,6 +600,8 @@
             $("#description_input").val(image.Description);
             ImageUploader.setImage('image', image.OriginalURL);
         }
+
+
 
 
         function init_UI() {

@@ -102,8 +102,9 @@
                     <span class="header outLinedText tbg-yellow">
                         D
                     </span>
-                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image"
-                        data-toggle="tooltip"></span>
+                    <span class="cmd fa fa-plus-square" id="newImageCmd" title="Ajouter un image" 
+                    data-toggle="tooltip"></span> 
+
                     <span class="cmd fa fa-arrow-down-wide-short" id="triAscendant"
                         title="Trier les images en ordre décroissant" data-toggle="tooltip"
                         onclick="changeOrder()"></span>
@@ -113,6 +114,8 @@
             </div>
             <div class="svg-wrapper">
 
+                
+                <span title="Vérfier mon compte" data-toggle="tooltip" id="verifyUserNotDone" class="cmd fa fa-square-check"></span>
                 <img src="" class="avatar" id="avatarUserConnected">
                 <span id="showUserInfo"></span>
 
@@ -236,6 +239,7 @@
         $("#avatarUserConnected").hide();
         $("#logOutCmd").hide();
         $("#editProfilCmd").hide();
+        $("#verifyUserNotDone").hide();
         if(userData != null)
         {
             checkUserConnected(userData);
@@ -1058,6 +1062,7 @@
             ]
         });
 
+        $("#verifyUserNotDone").click(ShowVerfiedCodeDialog);
         function checkUserConnected(userData) {
             if (userData != null) {
 
@@ -1067,6 +1072,11 @@
                     $("#avatarUserConnected").attr("src", userData.AvatarURL);
                 }
 
+                if(userData.VerifyCode != "verified")
+                {
+                    $("#verifyUserNotDone").show();
+                    console.log("square does appear");
+                }
                 $("#createAccountCmd").hide()
                 $("#logInCmd").hide();
                 $("#logOutCmd").show();
